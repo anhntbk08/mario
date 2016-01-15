@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.10.jar"/>
+	<classpathentry kind="lib" path="lib-local/jsi-1.0.0.jar" sourcepath="lib-local/jsi-1.0.0-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/NHBCommonGeo/lib-local/jsi-1.0.0-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/trove4j-2.0.2.jar"/>
+	<classpathentry kind="lib" path="lib-test/log4j-api-2.1.jar"/>
+	<classpathentry kind="lib" path="lib-test/log4j-core-2.1.jar"/>
+	<classpathentry kind="lib" path="lib-test/log4j-slf4j-impl-2.1.jar"/>
+	<classpathentry kind="lib" path="lib-test/disruptor-3.2.0.jar"/>
+	<classpathentry kind="lib" path="lib-local/worldwind.jar" sourcepath="/WorldWind/src"/>
+	<classpathentry kind="lib" path="lib-local/cluster-gvm-1.1.jar" sourcepath="/ClusterGVM/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommon"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
