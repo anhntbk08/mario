@@ -682,6 +682,7 @@ class ExtensionConfigReader extends XmlConfigReader {
 						ele = ele.getNextSibling();
 					}
 					config = httpMessageProducerConfig;
+					break;
 				case SOCKET:
 				default:
 					throw new UnsupportedTypeException();
