@@ -1,0 +1,6 @@
+/dist/
+/logs/
+/build/
+/bin/
+*.DS_Store
+/extensions/

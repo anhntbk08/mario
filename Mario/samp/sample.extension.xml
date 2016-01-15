@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mario>
+	<datasources>
+		<sql>
+			<name>[sql-source-name]</name>
+			<variables>
+				<variable name="url" type="string">jdbc:mysql://[host]:[port|3306]/[db_name]</variable>
+				<variable name="driverClassName" type="string">com.mysql.jdbc.Driver</variable>
+				<variable name="username" type="string">[user]</variable>
+				<variable name="password" type="string">[password]</variable>
+				<!-- <variable name="validatorClassName" type="string"></variable> -->
+				<variable name="minPool" type="integer">4</variable>
+				<variable name="maxPool" type="integer">32</variable>
+				<!-- <variable name="maxSize" type="integer"></variable> -->
+				<variable name="idleTimeout" type="integer">10000</variable>
+				<variable name="loginTimeout" type="integer">10000</variable>
+			</variables>
+		</sql>
+		<cassandra>
+			<name>[cassandra_datasource_name]</name>
+			<keyspace>[keyspace_name_to_connect]</keyspace>
+			<endpoint>
+				<entry>[my.domain1.com:port]</entry>
+				<entry>[my.domain2.com:port]</entry>
+			</endpoint>
+			<credential>
+				<username>[username]</username>
+				<password>[password]</password>
+			</credential>
+		</cassandra>
+		<mongodb>
+			<name>[mongodb-name]</name>
+			<endpoint>
+				<entry>
+					<host>127.0.0.1</host>
+					<port>27017</port>
+				</entry>
+			</endpoint>
+			<credentials>
+				<entry>
+					<username>admin</username>
+					<password>admin</password>
+					<authdb>admin</authdb>
+				</entry>
+			</credentials>
+		</mongodb>
+
+		<hazelcast>
+			<name>default-hazelcast</name>
+			<member>[ true | false ]</member>
+			<config>[/relative/path/to/configfile]</config>
+		</hazelcast>
+
+		<redis>
+			<name>default-redis</name>
+			<!-- support 4 types: single, master_slave, cluster, sentinel -->
+			<type>cluster</type>
+			<mastername>mymaster</mastername>
+			<!-- if type == sentinel, endpoint entries must be sentinel's endpoints -->
+			<endpoint>
+				<entry>
+					<!-- master tag use for servers type master_slave -->
+					<master>true</master>
+					<host>localhost</host>
+					<port>7000</port>
+				</entry>
+				<entry>
+					<host>localhost</host>
+					<port>7001</port>
+				</entry>
+				<entry>
+					<host>localhost</host>
+					<port>7002</port>
+				</entry>
+			</endpoint>
+		</redis>
+	</datasources>
+
+	<servers>
+		<rabbitmq>
+			<name>[rabbitmq_connection_pool]</name>
+			<endpoint>
+				<entry>
+					<host>host1</host>
+					<port>5672</port>
+				</entry>
+				<entry>
+					<host>host2</host>
+					<port>5672</port>
+				</entry>
+			</endpoint>
+			<credential>
+				<username>[userName]</username>
+				<password>[password]</password>
+			</credential>
+			<autoreconnect>true</autoreconnect>
+		</rabbitmq>
+		<http>
+			<name>[http_context_name]</name>
+			<port>[http_port]</port>
+			<options>[no_sessions | sessions | security | gzip]</options>
+			<sessiontimeout>[timeout_in_second (default = -1 mean forever)] (ignored if options != sessions)</sessiontimeout>
+		</http>
+	</servers>
+
+	<producers>
+		<rabbitmq>
+			<name>[producer_name, used for getApi to locate]</name>
+			<server>[name of connection]</server>
+			<timeout>[timeout]</timeout>
+			<queue>
+				<name>[queueName]</name>
+				<type>[task_queue | pub_sub | rpc | rounting | topic]</type>
+				<routingKey>[rountingKey, default will be queueName if exchangeName == null or emplty]</routingKey>
+				<exchangeName>[exchangeName]</exchangeName>
+				<exchangeType>[exchangeType]</exchangeType>
+			</queue>
+		</rabbitmq>
+		<http>
+			<name>[producer_name]</name>
+			<endpoint>[http_endpoint]</endpoint>
+			<method>[get (default) | post]</method>
+			<async>[false (default) | true]</async>
+			<usemultipath>[true (default) | false]</usemultipath>
+		</http>
+	</producers>
+
+	<gateways>
+		<http>
+			<name>[http_gateway_name]</name>
+			<server>[http_server_name]</server>
+			<path>[the_uri_location (default is /*)]</path>
+			<usemultipath>[true | false (default)]</usemultipath>
+			<deserializer>[deserializer-class]</deserializer>
+			<encoding>[utf-8]</encoding>
+			<header name="[header-name1]">[header-value1]</header>
+			<header name="[header-name2]">[header-value2]</header>
+			<async>[true | false]</async>
+			<!-- worker pool ignored if async == false -->
+			<workerpool>
+				<poolsize>8</poolsize>
+				<ringbuffersize>2048</ringbuffersize>
+				<threadnamepattern>Worker Pool #%d</threadnamepattern>
+			</workerpool>
+		</http>
+		<rabbitmq>
+			<name>[rabbitmq_gateway_name]</name>
+			<deserializer>[deserializer-class]</deserializer>
+			<server>[rabbitmq_connection_pool_name]</server>
+			<queue>
+				<type>taskQueue</type>
+				<name>[queueName]</name>
+				<autoack>true</autoack>
+				<routingKey>[rountingKey, default will be queueName if exchangeName == null or empty]</routingKey>
+				<exchangeName>[exchangeName]</exchangeName>
+				<exchangeType>[fanout | direct | topic | headers]</exchangeType>
+			</queue>
+			<workerpool>
+				<poolsize>8</poolsize>
+				<ringbuffersize>2048</ringbuffersize>
+				<threadnamepattern>Worker Pool #%d</threadnamepattern>
+			</workerpool>
+		</rabbitmq>
+		<socket>
+			<name>default-tcp</name>
+			<deserializer>[deserializer-class]</deserializer>
+			<protocol>[ TCP | UDT | UDP]</protocol>
+			<host>127.0.0.1</host>
+			<port>9999</port>
+			<uselengthprepender>[true | false]</uselengthprepender>
+			<workerpool>
+				<poolsize>8</poolsize>
+				<ringbuffersize>2048</ringbuffersize>
+				<threadnamepattern>Worker Pool #%d</threadnamepattern>
+			</workerpool>
+		</socket>
+	</gateways>
+
+	<lifecycles>
+		<entry>
+			<name>[lifecycle-name]</name>
+			<handle>[handle-class-name]</handle>
+			<variables></variables>
+		</entry>
+		<handler>
+			<name>[handle-name]</name>
+			<handle>[handle-class-name]</handle>
+			<bind>
+				<gateway>[gateway-name-1]</gateway>
+				<gateway>[gateway-name-2]</gateway>
+			</bind>
+			<variables></variables>
+		</handler>
+		<managedobject>
+			<name>[managed-object-name]</name>
+			<handle>[handle-class-name]</handle>
+			<variables></variables>
+		</managedobject>
+	</lifecycles>
+
+	<monitor>
+		<agent>
+			<name>[agent-name]</name>
+			<interval>[checking-interval-time]</interval>
+			<handle>[handler-class-name -> must implement MonitorAgent interface]</handle>
+		</agent>
+	</monitor>
+</mario>
