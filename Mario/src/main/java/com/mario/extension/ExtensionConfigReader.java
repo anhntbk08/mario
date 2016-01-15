@@ -568,7 +568,6 @@ class ExtensionConfigReader extends XmlConfigReader {
 					} catch (Exception ex) {
 						getLogger().warn("credential config is invalid : " + entry.getTextContent(), ex);
 					}
-
 				}
 				if (this.mongoDBConfigs == null) {
 					this.mongoDBConfigs = new ArrayList<MongoDBConfig>();
