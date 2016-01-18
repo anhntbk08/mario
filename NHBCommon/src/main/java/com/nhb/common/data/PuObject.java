@@ -326,6 +326,13 @@ public class PuObject extends BaseEventDispatcher implements PuObjectRW, Iterabl
 	}
 
 	@Override
+	public void decodeBase64(String fieldName) {
+		if (this.variableExists(fieldName)) {
+			this.values.get(fieldName).decodeBase64();
+		}
+	}
+
+	@Override
 	public Object remove(String fieldName) {
 		return this.values.remove(fieldName);
 	}

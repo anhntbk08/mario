@@ -8,10 +8,12 @@ public interface PuObjectRW extends PuObjectRO {
 
 	void addAll(PuObjectRO source);
 
+	void decodeBase64(String fieldName);
+
 	void setType(String fieldName, PuDataType type);
 
 	void set(String fieldName, Object value);
-	
+
 	void setRaw(String fieldName, byte[] value);
 
 	void setBoolean(String fieldName, Boolean value);
