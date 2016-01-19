@@ -2,7 +2,6 @@
 
 	<buildnumber file="build.number" />
 	<property file="build.properties" />
-<<<<<<< HEAD
 	<property name="version">build.${build.number}</property>
 	<property name="jar.name">${ant.project.name}-${version}</property>
 	<property name="lib" value="lib" />
@@ -11,16 +10,12 @@
 	<property name="dist" value="dist" />
 	<property name="dist.jar" value="${dist}/jar" />
 	<property name="dist.ext" value="${dist}/ext" />
-	<property name="mario.path" value="../../mario/MarioConsumer/lib" />
-	<property name="lagen2.path" value="../../LaGen2/LaGen2Core/__lib__" />
 
 	<!-- clean cache for ivy -->
 	<target name="clean-cache" description="--> clean the ivy cache">
 		<ivy:cleancache />
 	</target>
-=======
 	<property name="lagen2.deploy.path" value="../../LaGen2/LaGen2Core/__lib__" />
->>>>>>> origin/thanhapple/developing
 
 	<!-- User when ivy.xml changed -->
 	<target name="resolve" description="retreive dependencies with ivy">
@@ -64,7 +59,6 @@
 		</copy>
 	</target>
 
-<<<<<<< HEAD
 	<target name="deploy" depends="pack">
 		<delete>
 			<fileset dir="${deploy.path}">
@@ -76,17 +70,3 @@
 		</copy>
 	</target>
 </project>
-=======
-	<target name="deploy-to-lagen2" depends="build">
-		<delete>
-			<fileset dir="${lagen2.deploy.path}">
-				<include name="${ant.project.name}-build.*.jar" />
-			</fileset>
-		</delete>
-		<copy todir="${lagen2.deploy.path}">
-			<fileset dir="${dist}">
-			</fileset>
-		</copy>
-	</target>
-</project>
->>>>>>> origin/thanhapple/developing

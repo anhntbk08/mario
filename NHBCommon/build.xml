@@ -10,13 +10,6 @@
 	<property name="dist" value="dist" />
 	<property name="dist.jar" value="${dist}/jar" />
 	<property name="dist.ext" value="${dist}/ext" />
-<<<<<<< HEAD:NHBCommon/build.xml
-=======
-	<property name="mario.path" value="../../mario/Mario/lib" />
-	<property name="lagen2.path" value="../../LaGen2/LaGen2Core/__lib__">
-	</property>
-	<property name="bustracking.path" value="/Users/thanhapple/projects/bus_tracking/workspace/BusTracking/__lib__" />
->>>>>>> origin/thanhapple/developing:NhbCommon/build.xml
 
 	<!-- clean cache for ivy -->
 	<target name="clean-cache" description="--> clean the ivy cache">
@@ -76,30 +69,5 @@
 		</copy>
 	</target>
 
-<<<<<<< HEAD:NHBCommon/build.xml
-=======
-	<target name="deploy_to_lagen2" depends="pack">
-		<delete>
-			<fileset dir="${lagen2.path}">
-				<include name="${ant.project.name}-build.*.jar" />
-			</fileset>
-		</delete>
-		<copy todir="${lagen2.path}">
-			<fileset dir="${dist.ext}">
-			</fileset>
-		</copy>
-	</target>
 
-	<target name="deploy_to_bustracking" depends="pack">
-		<delete>
-			<fileset dir="${bustracking.path}">
-				<include name="${ant.project.name}-build.*.jar" />
-			</fileset>
-		</delete>
-		<copy todir="${bustracking.path}">
-			<fileset dir="${dist.ext}">
-			</fileset>
-		</copy>
-	</target>
->>>>>>> origin/thanhapple/developing:NhbCommon/build.xml
 </project>

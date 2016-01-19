@@ -1,4 +1,4 @@
-<project name="nhb-common-messaging" default="deploy-to-mario" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="nhb-common-messaging" default="pack" xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<buildnumber file="build.number" />
 	<property file="build.properties" />
@@ -10,8 +10,6 @@
 	<property name="dist" value="dist" />
 	<property name="dist.jar" value="${dist}/jar" />
 	<property name="dist.ext" value="${dist}/ext" />
-	<property name="mario.path" value="../../mario/Mario/lib" />
-	<property name="lagen2.deploy.path" value="../../LaGen2/LaGen2Core/__lib__" />
 
 	<!-- clean cache for ivy -->
 	<target name="clean-cache" description="--> clean the ivy cache">
@@ -66,27 +64,4 @@
 		</copy>
 	</target>
 
-	<target name="deploy-to-mario" depends="pack">
-		<delete>
-			<fileset dir="${mario.path}">
-				<include name="${ant.project.name}-build.*.jar" />
-			</fileset>
-		</delete>
-		<copy todir="${mario.path}">
-			<fileset dir="${dist.ext}">
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="deploy-to-lagen2" depends="pack">
-		<delete>
-			<fileset dir="${lagen2.deploy.path}">
-				<include name="${ant.project.name}-build.*.jar" />
-			</fileset>
-		</delete>
-		<copy todir="${lagen2.deploy.path}">
-			<fileset dir="${dist.ext}">
-			</fileset>
-		</copy>
-	</target>
 </project>
