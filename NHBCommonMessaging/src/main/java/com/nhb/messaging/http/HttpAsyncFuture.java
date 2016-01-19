@@ -9,5 +9,7 @@ import com.nhb.common.data.PuElement;
 
 public interface HttpAsyncFuture extends RPCFuture<HttpResponse> {
 
+	Exception getFailedCause();
+
 	PuElement getPuElement() throws InterruptedException, ExecutionException;
 }

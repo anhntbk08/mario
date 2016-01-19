@@ -17,6 +17,13 @@ import com.nhb.common.data.PuXmlHelper;
 
 class HttpAsyncFutureImpl extends BaseRPCFuture<HttpResponse> implements HttpAsyncFuture, FutureCallback<HttpResponse> {
 
+	private Exception failedCause;
+
+	@Override
+	public Exception getFailedCause() {
+		return this.failedCause;
+	}
+
 	@Override
 	public void cancelled() {
 		this.cancel(false);
@@ -30,6 +37,7 @@ class HttpAsyncFutureImpl extends BaseRPCFuture<HttpResponse> implements HttpAsy
 
 	@Override
 	public void failed(Exception arg0) {
+		this.failedCause = arg0;
 		this.set(null);
 		this.done();
 	}

@@ -15,7 +15,6 @@ public abstract class HttpMessageProducer<T> implements MessageProducer<T>, Clos
 	private final HttpClientHelper httpClientHelper = new HttpClientHelper();
 
 	private HttpMethod method = HttpMethod.GET;
-	private boolean usingMultipath = true;
 	private String endpoint;
 
 	@Override
@@ -70,11 +69,18 @@ public abstract class HttpMessageProducer<T> implements MessageProducer<T>, Clos
 	}
 
 	public boolean isUsingMultipath() {
-		return usingMultipath;
+		return this.httpClientHelper.isUsingMultipath();
 	}
 
 	public void setUsingMultipath(boolean useMultipath) {
-		this.usingMultipath = useMultipath;
-		this.httpClientHelper.setUsingMultipath(this.usingMultipath);
+		this.httpClientHelper.setUsingMultipath(useMultipath);
+	}
+
+	public boolean isFollowRedirect() {
+		return this.httpClientHelper.isFollowRedirect();
+	}
+
+	public void setFollowRedirect(boolean followRedirect) {
+		this.httpClientHelper.setFollowRedirect(followRedirect);
 	}
 }
