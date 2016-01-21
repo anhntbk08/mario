@@ -45,6 +45,9 @@ public final class GatewayManager extends BaseLoggable {
 				case SOCKET:
 					result = SocketGatewayFactory.newSocketGateway(((SocketGatewayConfig) config));
 					break;
+				case KAFKA:
+					
+					break;
 				default:
 					break;
 				}

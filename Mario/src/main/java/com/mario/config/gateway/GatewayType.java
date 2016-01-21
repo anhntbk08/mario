@@ -1,7 +1,7 @@
 package com.mario.config.gateway;
 
 public enum GatewayType {
-	HTTP, RABBITMQ, SOCKET;
+	HTTP, RABBITMQ, SOCKET, KAFKA;
 
 	public static GatewayType fromName(String name) {
 		if (name != null && name.trim().length() > 0) {
