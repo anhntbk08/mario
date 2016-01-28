@@ -90,17 +90,18 @@ public class KafkaGateway extends AbstractGateway<KafkaGatewayConfig> {
 	@Override
 	protected void _stop() throws Exception {
 		if (this.consumer != null) {
+			this.consumer.stop();
 		}
 	}
 
 	@Override
 	public void onHandleComplete(Message message, PuElement result) {
-
+		// do nothing
 	}
 
 	@Override
 	public void onHandleError(Message message, Throwable exception) {
-
+		getLogger().error("Error while handling message: " + message.getData(), exception);
 	}
 
 }
