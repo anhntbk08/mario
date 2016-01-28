@@ -101,15 +101,19 @@
 			<name>[http_context_name]</name>
 			<port>[http_port]</port>
 			<options>[no_sessions | sessions | security | gzip]</options>
-			<sessiontimeout>[timeout_in_second (default = -1 mean forever)] (this will be ignored if options != sessions)</sessiontimeout>
+			<sessiontimeout>[timeout_in_second (default = -1 mean forever)] (this
+				will be ignored if options != sessions)
+			</sessiontimeout>
 		</http>
 		<kafka>
+			<name>[kafka_server_wrapper_name]</name>
 			<zookeeper>
 				<endpoint>
 					<entry>[my.domain1.com:port]</entry>
 					<entry>[my.domain2.com:port]</entry>
 				</endpoint>
 				<connectiontimeout>[connection_timeout]</connectiontimeout>
+				<synctime>[connection_timeout]</synctime>
 			</zookeeper>
 		</kafka>
 	</servers>
@@ -145,10 +149,9 @@
 			<producertype>[SYNC | ASYNC]</producertype>
 			<compressioncodec>[NONE | GZIP | SNAPPY | LZ4]</compressioncodec>
 			<compressedtopics>[true | false]</compressedtopics>
-			<autocommitinterval>[commit_interval_ms (default 1000ms)]</autocommitinterval>
+			<autocommitinterval>[commit_interval_ms (default 1000ms)]
+			</autocommitinterval>
 			<topic>[topic_name]</topic>
-			<serializer>[serializer_class]</serializer>
-			<deserializer>[deserializer_class]</deserializer>
 		</kafka>
 	</producers>
 
@@ -205,10 +208,12 @@
 		</socket>
 		<kafka>
 			<name>[name]</name>
-			<zookeeper>[zookeeper_server_name]</zookeeper>
-			<groupid>[group_id]</groupid>
-			<timeout>[timeout_ms]</timeout>
-			<deserializer>[deserializer_class]</deserializer>
+			<deserializer>[deserializer_class | shouldn't set this if you don't
+				know what are you doing]
+			</deserializer>
+			<config>[relative_path_to_config_file]</config>
+			<pollTimeout>[poll_timeout]</pollTimeout>
+			<topics>[the_topics_seperate_by_comma(,)]</topics>
 			<workerpool>
 				<poolsize>8</poolsize>
 				<ringbuffersize>2048</ringbuffersize>

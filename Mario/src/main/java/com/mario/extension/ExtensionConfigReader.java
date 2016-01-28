@@ -35,7 +35,6 @@ import com.mario.config.serverwrapper.HttpServerWrapperConfig;
 import com.mario.config.serverwrapper.RabbitMQServerWrapperConfig;
 import com.mario.config.serverwrapper.ServerWrapperConfig;
 import com.mario.config.serverwrapper.ServerWrapperConfig.ServerWrapperType;
-import com.mario.config.serverwrapper.KafkaServerWrapperConfig;
 import com.mario.extension.xml.EndpointReader;
 import com.mario.gateway.http.JettyHttpServerOptions;
 import com.mario.gateway.socket.SocketProtocol;
@@ -49,8 +48,6 @@ import com.nhb.common.vo.HostAndPort;
 import com.nhb.common.vo.UserNameAndPassword;
 import com.nhb.messaging.MessagingModel;
 import com.nhb.messaging.http.HttpMethod;
-import com.nhb.messaging.kafka.config.KafkaCompressionCodec;
-import com.nhb.messaging.kafka.config.KafkaProducerType;
 import com.nhb.messaging.rabbit.RabbitMQQueueConfig;
 
 class ExtensionConfigReader extends XmlConfigReader {
@@ -130,7 +127,6 @@ class ExtensionConfigReader extends XmlConfigReader {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void readServerWrapperConfigs(Node node) throws XPathExpressionException {
 		this.serverWrapperConfigs = new ArrayList<>();
 		if (node == null) {
@@ -213,37 +209,6 @@ class ExtensionConfigReader extends XmlConfigReader {
 							((Node) xPath.compile("name").evaluate(item, XPathConstants.NODE)).getTextContent());
 					rabbitMQServerWrapperConfig.setCredential(new UserNameAndPassword(userName, password));
 					this.serverWrapperConfigs.add(rabbitMQServerWrapperConfig);
-					break;
-				}
-				case ZOOKEEPER: {
-					KafkaServerWrapperConfig zooKeeperServerWrapperConfig = new KafkaServerWrapperConfig();
-					Node curr = item.getFirstChild();
-					while (curr != null) {
-						if (curr.getNodeType() == 1) {
-							String value = curr.getTextContent().trim();
-							switch (curr.getNodeName().trim().toLowerCase()) {
-							case "name":
-								zooKeeperServerWrapperConfig.setName(value);
-								break;
-							case "endpoints":
-							case "endpoint":
-								Object endpoint = EndpointReader.read(curr);
-								if (endpoint instanceof HostAndPort) {
-									zooKeeperServerWrapperConfig.addEndpoint((HostAndPort) endpoint);
-								} else if (endpoint instanceof Collection) {
-									zooKeeperServerWrapperConfig.addEndpoint((Collection<HostAndPort>) endpoint);
-								} else {
-									throw new RuntimeException("Endpoint invalid: " + curr.getTextContent());
-								}
-								break;
-							case "connectiontimeout":
-								zooKeeperServerWrapperConfig.setConnectionTimeout(Integer.valueOf(value));
-								break;
-							}
-						}
-						curr = curr.getNextSibling();
-					}
-					this.serverWrapperConfigs.add(zooKeeperServerWrapperConfig);
 					break;
 				}
 				default:
@@ -344,23 +309,20 @@ class ExtensionConfigReader extends XmlConfigReader {
 								kafkaGatewayConfig.setDeserializerClassName(value);
 							} else if (nodeName.equalsIgnoreCase("workerpool")) {
 								kafkaGatewayConfig.setWorkerPoolConfig(readWorkerPoolConfig(ele));
-							} else if (nodeName.equalsIgnoreCase("timeout")) {
-								kafkaGatewayConfig.setTimeout(Integer.valueOf(value));
-							} else if (nodeName.equalsIgnoreCase("topic")) {
-								kafkaGatewayConfig.setTopic(value);
-							} else if (nodeName.equalsIgnoreCase("autocommitinterval")
-									|| nodeName.equalsIgnoreCase("commitinterval")) {
-								kafkaGatewayConfig.setAutoCommitInterval(Integer.valueOf(value));
-							} else if (nodeName.equalsIgnoreCase("server") || nodeName.equalsIgnoreCase("zookeeper")
-									|| nodeName.equalsIgnoreCase("zookeeperconfig")) {
-								for (ServerWrapperConfig serverWrapperConfig : this.serverWrapperConfigs) {
-									if (serverWrapperConfig instanceof KafkaServerWrapperConfig
-											&& serverWrapperConfig.getName().equals(value)) {
-										kafkaGatewayConfig.setZooKeeperConfig(
-												((KafkaServerWrapperConfig) serverWrapperConfig).getSource());
+							} else if (nodeName.equalsIgnoreCase("config") || nodeName.equalsIgnoreCase("configuration")
+									|| nodeName.equalsIgnoreCase("configFile")
+									|| nodeName.equalsIgnoreCase("configurationFile")) {
+								kafkaGatewayConfig.setConfigFile(value);
+							} else if (nodeName.equalsIgnoreCase("topics")) {
+								String[] arr = value.split(",");
+								for (String str : arr) {
+									str = str.trim();
+									if (str.length() > 0) {
+										kafkaGatewayConfig.getTopics().add(str);
 									}
 								}
-								kafkaGatewayConfig.setServerWrapperName(value);
+							} else if (nodeName.equalsIgnoreCase("pollTimeout")) {
+								kafkaGatewayConfig.setPollTimeout(Integer.valueOf(value));
 							}
 						}
 						ele = ele.getNextSibling();
@@ -710,7 +672,6 @@ class ExtensionConfigReader extends XmlConfigReader {
 		this.monitorAgentConfigs = new ArrayList<>();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void readProducerConfigs(Node node) throws XPathExpressionException {
 		this.producerConfigs = new ArrayList<>();
 		if (node == null) {
@@ -729,28 +690,12 @@ class ExtensionConfigReader extends XmlConfigReader {
 						if (ele.getNodeType() == 1) {
 							String nodeName = ele.getNodeName();
 							String value = ele.getTextContent().trim();
-							if (nodeName.equalsIgnoreCase("endpoint") || nodeName.equalsIgnoreCase("endpoints")) {
-								Object endpoint = EndpointReader.read(ele);
-								if (endpoint != null) {
-									if (endpoint instanceof HostAndPort) {
-										kafkaProducerConfig.addBrokers((HostAndPort) endpoint);
-									} else if (endpoint instanceof Collection) {
-										kafkaProducerConfig.addBrokers((Collection<HostAndPort>) endpoint);
-									}
-								}
-							} else if (nodeName.equalsIgnoreCase("producertype")) {
-								kafkaProducerConfig.setProducerType(KafkaProducerType.fromName(value));
-							} else if (nodeName.equalsIgnoreCase("compressioncodec")) {
-								kafkaProducerConfig.setCompressionCodec(KafkaCompressionCodec.fromName(value));
-							} else if (nodeName.equalsIgnoreCase("compressedtopics")
-									|| nodeName.equalsIgnoreCase("iscompressedtopics")) {
-								kafkaProducerConfig.setCompressedTopics(Boolean.valueOf(value));
-							} else if (nodeName.equalsIgnoreCase("serializer")
-									|| nodeName.equalsIgnoreCase("serializerclass")) {
-								kafkaProducerConfig.setSerializerClass(value);
-							} else if (nodeName.equalsIgnoreCase("deserializer")
-									|| nodeName.equalsIgnoreCase("deserializerclass")) {
-								kafkaProducerConfig.setDeserializerClass(value);
+							if (nodeName.equalsIgnoreCase("config") || nodeName.equalsIgnoreCase("configuration")
+									|| nodeName.equalsIgnoreCase("configFile")
+									|| nodeName.equalsIgnoreCase("configurationFile")) {
+								kafkaProducerConfig.setConfigFile(value);
+							} else if (nodeName.equalsIgnoreCase("topic")) {
+								kafkaProducerConfig.setTopic(value);
 							}
 						}
 						ele = ele.getNextSibling();

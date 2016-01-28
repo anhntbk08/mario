@@ -1,57 +1,39 @@
 package com.mario.config.gateway;
 
-import com.nhb.messaging.kafka.config.KafkaConsumerConfig;
-import com.nhb.messaging.kafka.config.ZooKeeperConfig;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mario.entity.message.transcoder.kafka.KafkaDeserializer;
 
 public class KafkaGatewayConfig extends GatewayConfig {
 
 	{
 		this.setType(GatewayType.KAFKA);
+		this.setDeserializerClassName(KafkaDeserializer.class.getName());
 	}
 
-	private final KafkaConsumerConfig source = new KafkaConsumerConfig();
+	private String configFile;
+	private int pollTimeout = 100;
+	private final List<String> topics = new ArrayList<>();
 
-	public int getAutoCommitInterval() {
-		return source.getAutoCommitInterval();
+	public String getConfigFile() {
+		return this.configFile;
 	}
 
-	public void setAutoCommitInterval(int autoCommitInterval) {
-		source.setAutoCommitInterval(autoCommitInterval);
+	public void setConfigFile(String configFile) {
+		this.configFile = configFile;
 	}
 
-	public String getTopic() {
-		return source.getTopic();
+	public List<String> getTopics() {
+		return topics;
 	}
 
-	public void setTopic(String topic) {
-		source.setTopic(topic);
+	public int getPollTimeout() {
+		return pollTimeout;
 	}
 
-	public ZooKeeperConfig getZooKeeperConfig() {
-		return source.getZooKeeperConfig();
+	public void setPollTimeout(int pollTimeout) {
+		this.pollTimeout = pollTimeout;
 	}
 
-	public void setZooKeeperConfig(ZooKeeperConfig zooKeeperConfig) {
-		source.setZooKeeperConfig(zooKeeperConfig);
-	}
-
-	public String getGroupId() {
-		return source.getGroupId();
-	}
-
-	public void setGroupId(String groupId) {
-		source.setGroupId(groupId);
-	}
-
-	public int getTimeout() {
-		return source.getTimeout();
-	}
-
-	public void setTimeout(int timeout) {
-		source.setTimeout(timeout);
-	}
-
-	public KafkaConsumerConfig getSource() {
-		return this.source;
-	}
 }
