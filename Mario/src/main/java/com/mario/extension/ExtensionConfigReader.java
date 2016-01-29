@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 import com.mario.config.CassandraConfig;
 import com.mario.config.HazelcastConfig;
 import com.mario.config.HttpMessageProducerConfig;
+import com.mario.config.KafkaMessageProducerConfig;
 import com.mario.config.LifeCycleConfig;
 import com.mario.config.ManagedObjectConfig;
 import com.mario.config.MessageHandlerConfig;
@@ -27,6 +28,7 @@ import com.mario.config.WorkerPoolConfig;
 import com.mario.config.gateway.GatewayConfig;
 import com.mario.config.gateway.GatewayType;
 import com.mario.config.gateway.HttpGatewayConfig;
+import com.mario.config.gateway.KafkaGatewayConfig;
 import com.mario.config.gateway.RabbitMQGatewayConfig;
 import com.mario.config.gateway.SocketGatewayConfig;
 import com.mario.config.serverwrapper.HttpServerWrapperConfig;
@@ -215,6 +217,9 @@ class ExtensionConfigReader extends XmlConfigReader {
 			}
 			item = item.getNextSibling();
 		}
+		for (ServerWrapperConfig config : this.serverWrapperConfigs) {
+			config.setExtensionName(this.extensionName);
+		}
 	}
 
 	private WorkerPoolConfig readWorkerPoolConfig(Node node) throws XPathExpressionException {
@@ -289,6 +294,42 @@ class ExtensionConfigReader extends XmlConfigReader {
 				GatewayConfig config = null;
 				Node ele = null;
 				switch (type) {
+				case KAFKA: {
+					KafkaGatewayConfig kafkaGatewayConfig = new KafkaGatewayConfig();
+					ele = item.getFirstChild();
+					while (ele != null) {
+						if (ele.getNodeType() == 1) {
+							String value = ele.getTextContent().trim();
+							String nodeName = ele.getNodeName();
+							if (nodeName.equalsIgnoreCase("name")) {
+								kafkaGatewayConfig.setName(value);
+							} else if (nodeName.equalsIgnoreCase("serializer")) {
+								kafkaGatewayConfig.setSerializerClassName(value);
+							} else if (nodeName.equalsIgnoreCase("deserializer")) {
+								kafkaGatewayConfig.setDeserializerClassName(value);
+							} else if (nodeName.equalsIgnoreCase("workerpool")) {
+								kafkaGatewayConfig.setWorkerPoolConfig(readWorkerPoolConfig(ele));
+							} else if (nodeName.equalsIgnoreCase("config") || nodeName.equalsIgnoreCase("configuration")
+									|| nodeName.equalsIgnoreCase("configFile")
+									|| nodeName.equalsIgnoreCase("configurationFile")) {
+								kafkaGatewayConfig.setConfigFile(value);
+							} else if (nodeName.equalsIgnoreCase("topics")) {
+								String[] arr = value.split(",");
+								for (String str : arr) {
+									str = str.trim();
+									if (str.length() > 0) {
+										kafkaGatewayConfig.getTopics().add(str);
+									}
+								}
+							} else if (nodeName.equalsIgnoreCase("pollTimeout")) {
+								kafkaGatewayConfig.setPollTimeout(Integer.valueOf(value));
+							}
+						}
+						ele = ele.getNextSibling();
+					}
+					config = kafkaGatewayConfig;
+					break;
+				}
 				case HTTP:
 					HttpGatewayConfig httpGatewayConfig = new HttpGatewayConfig();
 					ele = item.getFirstChild();
@@ -643,6 +684,25 @@ class ExtensionConfigReader extends XmlConfigReader {
 				MessageProducerConfig config = null;
 				Node ele = item.getFirstChild();
 				switch (gatewayType) {
+				case KAFKA: {
+					KafkaMessageProducerConfig kafkaProducerConfig = new KafkaMessageProducerConfig();
+					while (ele != null) {
+						if (ele.getNodeType() == 1) {
+							String nodeName = ele.getNodeName();
+							String value = ele.getTextContent().trim();
+							if (nodeName.equalsIgnoreCase("config") || nodeName.equalsIgnoreCase("configuration")
+									|| nodeName.equalsIgnoreCase("configFile")
+									|| nodeName.equalsIgnoreCase("configurationFile")) {
+								kafkaProducerConfig.setConfigFile(value);
+							} else if (nodeName.equalsIgnoreCase("topic")) {
+								kafkaProducerConfig.setTopic(value);
+							}
+						}
+						ele = ele.getNextSibling();
+					}
+					config = kafkaProducerConfig;
+					break;
+				}
 				case RABBITMQ:
 					RabbitMQProducerConfig rabbitMQProducerConfig = new RabbitMQProducerConfig();
 					while (ele != null) {

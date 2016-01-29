@@ -9,11 +9,14 @@
 
 	<dependencies>
 		<!-- logging libs -->
-		<dependency org="com.google.guava" name="guava" rev="18.0" />
-		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.10" />
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.12" />
+		
 		<dependency org="org.msgpack" name="msgpack" rev="0.6.11" />
 		<dependency org="net.minidev" name="json-smart" rev="2.1.1" />
 		<dependency org="commons-io" name="commons-io" rev="2.4" />
 		<dependency org="org.apache.httpcomponents" name="httpclient" rev="4.4.1"/>
+
+		<!-- utilities -->
+		<dependency org="com.google.guava" name="guava" rev="18.0" />
 	</dependencies>
 </ivy-module>

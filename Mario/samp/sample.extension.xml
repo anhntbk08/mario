@@ -4,8 +4,10 @@
 		<sql>
 			<name>[sql-source-name]</name>
 			<variables>
-				<variable name="url" type="string">jdbc:mysql://[host]:[port|3306]/[db_name]</variable>
-				<variable name="driverClassName" type="string">com.mysql.jdbc.Driver</variable>
+				<variable name="url" type="string">jdbc:mysql://[host]:[port|3306]/[db_name]
+				</variable>
+				<variable name="driverClassName" type="string">com.mysql.jdbc.Driver
+				</variable>
 				<variable name="username" type="string">[user]</variable>
 				<variable name="password" type="string">[password]</variable>
 				<!-- <variable name="validatorClassName" type="string"></variable> -->
@@ -99,8 +101,21 @@
 			<name>[http_context_name]</name>
 			<port>[http_port]</port>
 			<options>[no_sessions | sessions | security | gzip]</options>
-			<sessiontimeout>[timeout_in_second (default = -1 mean forever)] (ignored if options != sessions)</sessiontimeout>
+			<sessiontimeout>[timeout_in_second (default = -1 mean forever)] (this
+				will be ignored if options != sessions)
+			</sessiontimeout>
 		</http>
+		<kafka>
+			<name>[kafka_server_wrapper_name]</name>
+			<zookeeper>
+				<endpoint>
+					<entry>[my.domain1.com:port]</entry>
+					<entry>[my.domain2.com:port]</entry>
+				</endpoint>
+				<connectiontimeout>[connection_timeout]</connectiontimeout>
+				<synctime>[connection_timeout]</synctime>
+			</zookeeper>
+		</kafka>
 	</servers>
 
 	<producers>
@@ -111,7 +126,9 @@
 			<queue>
 				<name>[queueName]</name>
 				<type>[task_queue | pub_sub | rpc | rounting | topic]</type>
-				<routingKey>[rountingKey, default will be queueName if exchangeName == null or emplty]</routingKey>
+				<routingKey>[rountingKey, default will be queueName if exchangeName
+					== null or emplty]
+				</routingKey>
 				<exchangeName>[exchangeName]</exchangeName>
 				<exchangeType>[exchangeType]</exchangeType>
 			</queue>
@@ -123,6 +140,19 @@
 			<async>[false (default) | true]</async>
 			<usemultipath>[true (default) | false]</usemultipath>
 		</http>
+		<kafka>
+			<name>[producer_name]</name>
+			<endpoint>
+				<entry>[host1:port1]</entry>
+				<entry>[host2:port2]</entry>
+			</endpoint>
+			<producertype>[SYNC | ASYNC]</producertype>
+			<compressioncodec>[NONE | GZIP | SNAPPY | LZ4]</compressioncodec>
+			<compressedtopics>[true | false]</compressedtopics>
+			<autocommitinterval>[commit_interval_ms (default 1000ms)]
+			</autocommitinterval>
+			<topic>[topic_name]</topic>
+		</kafka>
 	</producers>
 
 	<gateways>
@@ -151,7 +181,9 @@
 				<type>taskQueue</type>
 				<name>[queueName]</name>
 				<autoack>true</autoack>
-				<routingKey>[rountingKey, default will be queueName if exchangeName == null or empty]</routingKey>
+				<routingKey>[rountingKey, default will be queueName if exchangeName
+					== null or empty]
+				</routingKey>
 				<exchangeName>[exchangeName]</exchangeName>
 				<exchangeType>[fanout | direct | topic | headers]</exchangeType>
 			</queue>
@@ -174,6 +206,20 @@
 				<threadnamepattern>Worker Pool #%d</threadnamepattern>
 			</workerpool>
 		</socket>
+		<kafka>
+			<name>[name]</name>
+			<deserializer>[deserializer_class | shouldn't set this if you don't
+				know what are you doing]
+			</deserializer>
+			<config>[relative_path_to_config_file]</config>
+			<pollTimeout>[poll_timeout]</pollTimeout>
+			<topics>[the_topics_seperate_by_comma(,)]</topics>
+			<workerpool>
+				<poolsize>8</poolsize>
+				<ringbuffersize>2048</ringbuffersize>
+				<threadnamepattern>Worker Pool #%d</threadnamepattern>
+			</workerpool>
+		</kafka>
 	</gateways>
 
 	<lifecycles>
@@ -202,7 +248,8 @@
 		<agent>
 			<name>[agent-name]</name>
 			<interval>[checking-interval-time]</interval>
-			<handle>[handler-class-name -> must implement MonitorAgent interface]</handle>
+			<handle>[handler-class-name -> must implement MonitorAgent interface]
+			</handle>
 		</agent>
 	</monitor>
 </mario>
