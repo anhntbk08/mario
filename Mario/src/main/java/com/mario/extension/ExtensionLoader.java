@@ -55,7 +55,7 @@ final class ExtensionLoader extends BaseLoggable {
 	@SuppressWarnings("unchecked")
 	private <ClassType> ClassType loadClass(String className) throws ClassNotFoundException {
 		if (className != null && className.trim().length() > 0) {
-			Class<?> clazz = this.classLoader.loadClass(className);
+			Class<?> clazz = this.classLoader == null ? null : this.classLoader.loadClass(className);
 			if (clazz == null) {
 				clazz = this.getClass().getClassLoader().loadClass(className);
 			}
