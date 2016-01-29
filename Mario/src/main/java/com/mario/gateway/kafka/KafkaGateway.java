@@ -74,8 +74,7 @@ public class KafkaGateway extends AbstractGateway<KafkaGatewayConfig> {
 		try (InputStream is = new FileInputStream(this.defaultConfigFile)) {
 			properties.load(is);
 		} catch (IOException e) {
-			// throw new RuntimeException("Default properties file for kafka
-			// consumer config was not found");
+			getLogger().info("Default properties file for kafka consumer config was not found");
 		}
 		return properties;
 	}

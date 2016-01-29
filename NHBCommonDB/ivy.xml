@@ -9,7 +9,7 @@
 
 	<dependencies>
 		<!-- logging libs -->
-		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.10" />
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.12" />
 
 		<!-- database -->
 		<dependency org="org.jdbi" name="jdbi" rev="2.62" />

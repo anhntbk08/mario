@@ -36,10 +36,18 @@ public class KafkaMessageProducer extends BaseLoggable implements MessageProduce
 		}
 	}
 
+	public void send(byte[] key, PuElement value) {
+		this.producer.send(new ProducerRecord<byte[], PuElement>(this.defaultTopic, key, value));
+	}
+
+	public void send(String topic, byte[] key, PuElement value) {
+		this.producer.send(new ProducerRecord<byte[], PuElement>(topic, key, value));
+	}
+
 	@Override
 	public byte[] publish(PuElement data) {
 		byte[] key = Converter.uuidToBytes(UUID.randomUUID());
-		this.producer.send(new ProducerRecord<byte[], PuElement>(this.defaultTopic, key, data));
+		this.send(key, data);
 		return key;
 	}
 
@@ -49,7 +57,7 @@ public class KafkaMessageProducer extends BaseLoggable implements MessageProduce
 			throw new IllegalArgumentException("topic cannot be null");
 		}
 		byte[] key = Converter.uuidToBytes(UUID.randomUUID());
-		this.producer.send(new ProducerRecord<byte[], PuElement>(topic, key, data));
+		this.send(topic, key, data);
 		return key;
 	}
 
