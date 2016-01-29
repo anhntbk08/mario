@@ -19,7 +19,6 @@
 	<classpathentry kind="lib" path="lib/gson-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/guava-18.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/mail-1.5.0-b01.jar"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib-local/sqljdbc41.jar"/>
@@ -61,6 +60,26 @@
 	<classpathentry kind="lib" path="lib/jetty-util-9.3.7.RC1.jar"/>
 	<classpathentry kind="lib" path="lib/hazelcast-all-3.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/cassandra-driver-core-3.0.0-rc1.jar"/>
+	<classpathentry kind="lib" path="lib/kafka_2.10-0.9.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/kafka-clients-0.9.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/httpasyncclient-4.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-nio-4.4.4.jar"/>
+	<classpathentry kind="lib" path="lib/jline-0.9.94.jar"/>
+	<classpathentry kind="lib" path="lib/jopt-simple-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/lz4-1.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/metrics-core-2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/netty-3.7.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/scala-library-2.10.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.6.jar"/>
+	<classpathentry kind="lib" path="lib/snappy-java-1.1.1.7.jar"/>
+	<classpathentry kind="lib" path="lib/trove4j-2.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/zkclient-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/zookeeper-3.4.6.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommonEncrypt"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommonMessaging"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommonPredicate"/>

@@ -14,12 +14,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mario.config.gateway.GatewayConfig;
 import com.mario.config.gateway.GatewayType;
+import com.mario.config.gateway.KafkaGatewayConfig;
 import com.mario.config.gateway.RabbitMQGatewayConfig;
 import com.mario.config.gateway.SocketGatewayConfig;
 import com.mario.entity.message.transcoder.MessageDecoder;
 import com.mario.entity.message.transcoder.MessageEncoder;
 import com.mario.extension.ExtensionManager;
 import com.mario.gateway.http.HttpGateway;
+import com.mario.gateway.kafka.KafkaGatewayFactory;
 import com.mario.gateway.rabbitmq.RabbitMQGatewayFactory;
 import com.mario.gateway.serverwrapper.HasServerWrapper;
 import com.mario.gateway.serverwrapper.ServerWrapperManager;
@@ -44,6 +46,9 @@ public final class GatewayManager extends BaseLoggable {
 					break;
 				case SOCKET:
 					result = SocketGatewayFactory.newSocketGateway(((SocketGatewayConfig) config));
+					break;
+				case KAFKA:
+					result = KafkaGatewayFactory.newKafkaGateway((KafkaGatewayConfig) config);
 					break;
 				default:
 					break;
