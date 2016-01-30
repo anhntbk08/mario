@@ -1,6 +1,7 @@
 package com.nhb.common.db.cassandra;
 
 import java.io.Closeable;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Cluster.Builder;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.ResultSetFuture;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.nhb.common.vo.HostAndPort;
@@ -54,6 +56,9 @@ public class CassandraDataSource implements Closeable {
 	}
 
 	public boolean isConnected() {
+		if (this.session.isClosed()) {
+			this.session = null;
+		}
 		return this.session != null;
 	}
 
@@ -102,10 +107,15 @@ public class CassandraDataSource implements Closeable {
 		}
 		Builder builder = new Builder();
 		for (HostAndPort endpoint : this.endpoints) {
-			builder.addContactPoint(endpoint.toString());
+			if (endpoint.getPort() <= 0) {
+				builder.addContactPoint(endpoint.getHost());
+			} else {
+				builder.addContactPointsWithPorts(
+						InetSocketAddress.createUnresolved(endpoint.getHost(), endpoint.getPort()));
+			}
 		}
 		this.cluster = builder.build();
-		this.session = this.cluster.connect();
+		this.session = this.keyspace != null ? this.cluster.connect(this.keyspace) : this.cluster.connect();
 	}
 
 	@Override
@@ -125,9 +135,21 @@ public class CassandraDataSource implements Closeable {
 		throw new IllegalStateException("Cluster not connected");
 	}
 
+	public ResultSetFuture executeAsync(Statement statement) {
+		if (this.isConnected()) {
+			return this.session.executeAsync(statement);
+		}
+		throw new IllegalStateException("Cluster not connected");
+	}
+
 	public ResultSet execute(String cql) {
 		BoundStatement statement = new BoundStatement(this.getPreparedStatement(cql));
 		return this.execute(statement);
+	}
+
+	public ResultSetFuture executeAsync(String cql) {
+		BoundStatement statement = new BoundStatement(this.getPreparedStatement(cql));
+		return this.executeAsync(statement);
 	}
 
 	public PreparedStatement getPreparedStatement(String cql) {
