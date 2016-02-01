@@ -56,7 +56,7 @@ public class CassandraDataSource implements Closeable {
 	}
 
 	public boolean isConnected() {
-		if (this.session.isClosed()) {
+		if (this.session != null && this.session.isClosed()) {
 			this.session = null;
 		}
 		return this.session != null;
