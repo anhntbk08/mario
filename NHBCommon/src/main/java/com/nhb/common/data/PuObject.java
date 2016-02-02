@@ -472,6 +472,11 @@ public class PuObject extends BaseEventDispatcher implements PuObjectRW, Iterabl
 	}
 
 	@Override
+	public byte[] getRaw(String fieldName, byte[] defaultValue) {
+		return this.variableExists(fieldName) ? this.getRaw(fieldName) : defaultValue;
+	}
+
+	@Override
 	public void setRaw(String fieldName, byte[] value) {
 		this.set(fieldName, value);
 	}
