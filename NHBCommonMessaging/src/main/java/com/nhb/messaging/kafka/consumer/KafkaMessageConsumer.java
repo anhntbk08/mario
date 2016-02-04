@@ -22,6 +22,8 @@ public class KafkaMessageConsumer extends BaseEventDispatcher {
 	private int pollTimeout = 100;
 	private Thread poolingThead;
 
+	private Properties properties;
+
 	public KafkaMessageConsumer(Properties properties, List<String> topics, int pollTimeout) {
 		if (properties == null) {
 			throw new IllegalArgumentException("Properties for kafka message consumer cannot be null");
@@ -32,6 +34,8 @@ public class KafkaMessageConsumer extends BaseEventDispatcher {
 
 		properties.put("key.deserializer", ByteArrayDeserializer.class.getName());
 		properties.put("value.deserializer", KafkaPuElementDeserializer.class.getName());
+
+		this.properties = properties;
 
 		this.consumer = new KafkaConsumer<>(properties);
 		this.topics = topics;
@@ -56,6 +60,11 @@ public class KafkaMessageConsumer extends BaseEventDispatcher {
 			}
 		};
 		this.poolingThead.start();
+		getLogger().info("Kafka Message Consumer started successfully with properties: {");
+		for (Object key : this.properties.keySet()) {
+			getLogger("pureLogger").info("\t" + key + " = " + properties.getProperty((String) key));
+		}
+		getLogger("pureLogger").info("}");
 	}
 
 	public void stop() {
@@ -66,5 +75,9 @@ public class KafkaMessageConsumer extends BaseEventDispatcher {
 			this.poolingThead.interrupt();
 			this.poolingThead = null;
 		}
+	}
+
+	public Properties getProperties() {
+		return this.properties;
 	}
 }

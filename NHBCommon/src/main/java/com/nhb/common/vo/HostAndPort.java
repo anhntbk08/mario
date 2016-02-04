@@ -58,7 +58,7 @@ public class HostAndPort {
 
 	@Override
 	public String toString() {
-		return this.getHost() + ":" + this.getPort();
+		return this.getHost() + (this.getPort() > 0 ? (":" + this.getPort()) : "");
 	}
 
 	public boolean isMaster() {

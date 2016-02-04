@@ -13,8 +13,11 @@
 		
 		<dependency org="org.msgpack" name="msgpack" rev="0.6.11" />
 		<dependency org="net.minidev" name="json-smart" rev="2.1.1" />
+		
 		<dependency org="commons-io" name="commons-io" rev="2.4" />
-		<dependency org="org.apache.httpcomponents" name="httpclient" rev="4.4.1"/>
+		<dependency org="commons-lang" name="commons-lang" rev="2.6"/>
+		
+		<dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5.1"/>
 
 		<!-- utilities -->
 		<dependency org="com.google.guava" name="guava" rev="18.0" />
