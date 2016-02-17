@@ -85,5 +85,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommonPredicate"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommon"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommonDB"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Fullmoon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
