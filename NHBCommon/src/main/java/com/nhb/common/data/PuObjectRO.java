@@ -26,6 +26,8 @@ public interface PuObjectRO extends Iterable<Entry<String, PuValue>>, PuElement 
 
 	byte[] getRaw(String fieldName);
 
+	byte[] getRaw(String fieldName, byte[] defaultValue);
+
 	byte getByte(String fieldName);
 
 	byte getByte(String fieldName, byte defaultValue);

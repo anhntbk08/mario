@@ -100,7 +100,7 @@ public class KafkaGateway extends AbstractGateway<KafkaGatewayConfig> {
 
 	@Override
 	public void onHandleError(Message message, Throwable exception) {
-		getLogger().error("Error while handling message: " + message.getData(), exception);
+		getLogger().error("Error while handling message: {}", message.getData(), exception);
 	}
 
 }

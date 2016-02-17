@@ -169,8 +169,8 @@ public class HttpGateway extends AbstractGateway<HttpGatewayConfig>
 	public void onHandleError(Message message, Throwable exception) {
 		String stacktrace = getFullStacktrace(exception);
 		stacktrace = stacktrace != null ? stacktrace : "null";
-		getLogger().error("Error while handling http request: {}\n--- STACKTRACE ---\n{}\n------------------",
-				exception.getMessage(), stacktrace, exception);
+		getLogger().error("Error while handling http request:\n--- MESSAGE ---\n{}\n--- STACKTRACE ---\n{}",
+				message.getData(), stacktrace == null ? exception : stacktrace);
 		AsyncContext asyncContext = null;
 		HttpServletResponse response = null;
 		if (message instanceof HttpMessage) {

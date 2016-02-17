@@ -262,4 +262,9 @@ public class PuHttpRequestObject implements PuObjectRO {
 	public String toString() {
 		return "{*** PuHttpRequestObject: " + this.toJSON() + " ***}";
 	}
+
+	@Override
+	public byte[] getRaw(String fieldName, byte[] defaultValue) {
+		return this.variableExists(fieldName) ? this.getRaw(fieldName) : defaultValue;
+	}
 }
