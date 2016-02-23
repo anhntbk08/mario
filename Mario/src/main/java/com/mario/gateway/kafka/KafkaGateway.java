@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+import com.mario.config.gateway.GatewayType;
 import com.mario.config.gateway.KafkaGatewayConfig;
 import com.mario.entity.message.Message;
 import com.mario.entity.message.impl.BaseKafkaMessage;
@@ -40,7 +41,9 @@ public class KafkaGateway extends AbstractGateway<KafkaGatewayConfig> {
 		return new MessageEventFactory() {
 			@Override
 			public Message newInstance() {
-				return new BaseKafkaMessage();
+				BaseKafkaMessage baseMessage = new BaseKafkaMessage();
+				baseMessage.setGatewayType(GatewayType.KAFKA);
+				return baseMessage;
 			}
 		};
 	}
