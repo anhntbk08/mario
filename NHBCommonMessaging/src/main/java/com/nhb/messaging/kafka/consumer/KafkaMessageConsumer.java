@@ -3,6 +3,7 @@ package com.nhb.messaging.kafka.consumer;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -16,6 +17,7 @@ import com.nhb.messaging.kafka.serialization.KafkaPuElementDeserializer;
 
 public class KafkaMessageConsumer extends BaseEventDispatcher {
 
+	private final AtomicBoolean closer = new AtomicBoolean(false);
 	private List<String> topics;
 	private KafkaConsumer<byte[], PuElement> consumer;
 
@@ -48,7 +50,7 @@ public class KafkaMessageConsumer extends BaseEventDispatcher {
 
 			@Override
 			public void run() {
-				while (true) {
+				while (!closer.get()) {
 					ConsumerRecords<byte[], PuElement> records = consumer.poll(pollTimeout);
 					Iterator<ConsumerRecord<byte[], PuElement>> it = records.iterator();
 					while (it.hasNext()) {
@@ -69,11 +71,13 @@ public class KafkaMessageConsumer extends BaseEventDispatcher {
 
 	public void stop() {
 		if (this.consumer != null) {
-			this.consumer.close();
-		}
-		if (this.poolingThead != null) {
-			this.poolingThead.interrupt();
-			this.poolingThead = null;
+			this.closer.set(true);
+			this.consumer.wakeup();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

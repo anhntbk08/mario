@@ -81,16 +81,18 @@
 		<copy todir="${dist.lib}">
 			<fileset dir="${lib.dir}">
 				<include name="*.jar" />
+				<exclude name="slf4j-log4j*" />
 			</fileset>
 		</copy>
 		<copy todir="${dist.lib}">
 			<fileset dir="${lib-local.dir}">
 				<include name="*.jar" />
+				<exclude name="slf4j-log4j*" />
 			</fileset>
 		</copy>
 		<copy todir="${dist.lib}">
 			<fileset dir="${build.jar}">
-
+				<exclude name="slf4j-log4j*" />
 			</fileset>
 		</copy>
 		<copy todir="${dist.ext}">

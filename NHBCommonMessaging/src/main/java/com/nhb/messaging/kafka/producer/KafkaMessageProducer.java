@@ -26,6 +26,8 @@ public class KafkaMessageProducer extends BaseLoggable implements MessageProduce
 		properties.put("key.serializer", ByteArraySerializer.class.getName());
 		properties.put("value.serializer", KafkaPuElementSerializer.class.getName());
 
+		getLogger().debug("init kafka producer with config: " + properties);
+
 		this.producer = new KafkaProducer<>(properties);
 		this.defaultTopic = defaultTopic;
 	}
