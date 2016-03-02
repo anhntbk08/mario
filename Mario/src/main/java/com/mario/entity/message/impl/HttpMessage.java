@@ -6,6 +6,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.mario.config.gateway.GatewayType;
 import com.mario.entity.message.CloneableMessage;
 import com.mario.entity.message.Message;
 
@@ -14,6 +15,10 @@ public class HttpMessage extends BaseMessage implements CloneableMessage {
 	private AsyncContext context;
 	private ServletRequest request;
 	private ServletResponse response;
+
+	{
+		this.setGatewayType(GatewayType.HTTP);
+	}
 
 	public HttpSession getSession() {
 		return this.request instanceof HttpServletRequest ? ((HttpServletRequest) this.request).getSession() : null;
