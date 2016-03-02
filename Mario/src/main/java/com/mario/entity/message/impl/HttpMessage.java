@@ -16,7 +16,7 @@ public class HttpMessage extends BaseMessage implements CloneableMessage {
 	private ServletRequest request;
 	private ServletResponse response;
 
-	{
+	public HttpMessage() {
 		this.setGatewayType(GatewayType.HTTP);
 	}
 
@@ -36,6 +36,7 @@ public class HttpMessage extends BaseMessage implements CloneableMessage {
 		this.context = other.context;
 		this.request = other.request;
 		this.response = other.response;
+		this.setGatewayType(GatewayType.HTTP);
 	}
 
 	@Override
