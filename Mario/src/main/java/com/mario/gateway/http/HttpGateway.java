@@ -213,6 +213,7 @@ public class HttpGateway extends AbstractGateway<HttpGatewayConfig>
 			@Override
 			public Message newInstance() {
 				HttpMessage msg = new HttpMessage();
+				msg.setGatewayType(GatewayType.HTTP);
 				msg.setCallback(HttpGateway.this);
 				msg.setGatewayType(GatewayType.HTTP);
 				return msg;
