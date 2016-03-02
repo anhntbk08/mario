@@ -82,5 +82,6 @@
 	<classpathentry kind="lib" path="lib/zkclient-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/zookeeper-3.4.6.jar"/>
 	<classpathentry kind="lib" path="lib-local/deadlockmonitor.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Fullmoon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
