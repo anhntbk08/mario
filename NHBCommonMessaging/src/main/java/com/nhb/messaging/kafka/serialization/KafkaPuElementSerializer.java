@@ -18,7 +18,9 @@ public class KafkaPuElementSerializer extends MsgpackCodec implements Serializer
 		if (data == null) {
 			return null;
 		}
-		return data.toBytes();
+		byte[] result = data.toBytes();
+		System.out.println("Sending data: " + new String(result));
+		return result;
 	}
 
 	@Override
