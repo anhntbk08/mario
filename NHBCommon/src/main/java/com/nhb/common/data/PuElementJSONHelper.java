@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minidev.json.parser.ParseException;
 
-class PuElementJSONHelper {
+public class PuElementJSONHelper {
 
 	private static Logger logger = LoggerFactory.getLogger(PuElementJSONHelper.class);
 
