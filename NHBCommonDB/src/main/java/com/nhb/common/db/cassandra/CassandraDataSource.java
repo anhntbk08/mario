@@ -193,7 +193,7 @@ public class CassandraDataSource implements Closeable {
 	}
 
 	private synchronized SynchronizedExecutor<PreparedStatement> getStatementPreparer(String cql) {
-		if (this.statementPreparers.containsKey(cql)) {
+		if (!this.statementPreparers.containsKey(cql)) {
 			this.statementPreparers.put(cql, new SynchronizedExecutor<PreparedStatement>());
 		}
 		return this.statementPreparers.get(cql);
