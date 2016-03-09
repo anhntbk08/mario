@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.datastax.driver.core.BoundStatement;
@@ -16,6 +17,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.ResultSetFuture;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
+import com.nhb.common.sync.SynchronizedExecutor;
 import com.nhb.common.vo.HostAndPort;
 
 public class CassandraDataSource implements Closeable {
@@ -23,6 +25,9 @@ public class CassandraDataSource implements Closeable {
 	private Cluster cluster;
 	private Session session;
 	private String keyspace;
+
+	private final SynchronizedExecutor<PreparedStatement> statementPreparer = new SynchronizedExecutor<>();
+	private final SynchronizedExecutor<Void> connector = new SynchronizedExecutor<>();
 
 	private final Collection<HostAndPort> endpoints = new HashSet<>();
 	private final Map<String, PreparedStatement> cachedStatements = new ConcurrentHashMap<>();
@@ -152,12 +157,35 @@ public class CassandraDataSource implements Closeable {
 		return this.executeAsync(statement);
 	}
 
-	public PreparedStatement getPreparedStatement(String cql) {
+	public PreparedStatement getPreparedStatement(final String cql) {
 		if (!this.isConnected()) {
-			this.connect();
+			try {
+				this.connector.execute(new Callable<Void>() {
+
+					@Override
+					public Void call() throws Exception {
+						connect();
+						return null;
+					}
+				}).get();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 		if (!this.cachedStatements.containsKey(cql)) {
-			this.cachedStatements.put(cql, this.session.prepare(cql));
+			try {
+				return this.statementPreparer.execute(new Callable<PreparedStatement>() {
+
+					@Override
+					public PreparedStatement call() throws Exception {
+						PreparedStatement result = session.prepare(cql);
+						cachedStatements.put(cql, result);
+						return result;
+					}
+				}).get();
+			} catch (Exception e) {
+				throw new RuntimeException("Error while preparing statement", e);
+			}
 		}
 		return this.cachedStatements.get(cql);
 	}
