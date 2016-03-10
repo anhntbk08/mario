@@ -1,7 +1,5 @@
 package com.mario.api;
 
-import org.redisson.Redisson;
-
 import com.hazelcast.core.HazelcastInstance;
 import com.mario.entity.message.Message;
 import com.mario.gateway.Gateway;
@@ -34,8 +32,6 @@ public interface MarioApi {
 	HazelcastInstance getHazelcastInstance(String name);
 
 	JedisService getJedisService(String name);
-
-	Redisson getRedisson(String name);
 
 	PuElement call(String handlerName, PuElement request);
 

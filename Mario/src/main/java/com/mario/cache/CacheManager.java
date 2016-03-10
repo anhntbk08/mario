@@ -6,13 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.redisson.ClusterServersConfig;
-import org.redisson.MasterSlaveServersConfig;
-import org.redisson.Redisson;
-import org.redisson.SentinelServersConfig;
-import org.redisson.connection.RandomLoadBalancer;
-import org.redisson.connection.RoundRobinLoadBalancer;
-
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.XmlClientConfigBuilder;
@@ -34,16 +27,11 @@ import redis.clients.jedis.JedisSentinelPool;
 
 public class CacheManager extends BaseLoggable {
 
-	private static final String DEFAULT_REDIS_ENDPOINT = System.getProperty("redis.default.host", "127.0.0.1") + ":"
-			+ System.getProperty("redis.default.port", "6379");
-
 	private Map<String, HazelcastInstance> hazelcastInstances;
 	private Map<String, JedisService> jedisServices;
-	private Map<String, Redisson> redissons;
 
 	public CacheManager() {
 		this.hazelcastInstances = new HashMap<>();
-		this.redissons = new HashMap<String, Redisson>();
 		this.jedisServices = new HashMap<>();
 	}
 
@@ -64,63 +52,6 @@ public class CacheManager extends BaseLoggable {
 			}
 		}
 
-		for (Redisson redisson : this.redissons.values()) {
-			try {
-				redisson.shutdown();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private Redisson createRedission(RedisConfig redisConfig) {
-		org.redisson.Config config = new org.redisson.Config();
-		switch (redisConfig.getRedisType()) {
-		case CLUSTER:
-			ClusterServersConfig clusterServerConfig = config.useClusterServers();
-			clusterServerConfig.setScanInterval(redisConfig.getScanInterval());
-			for (HostAndPort endpoint : redisConfig.getEndpoints()) {
-				clusterServerConfig.addNodeAddress(endpoint.toString());
-			}
-			break;
-		case MASTER_SLAVE:
-			MasterSlaveServersConfig masterSlaveConfig = config.useMasterSlaveConnection();
-			for (HostAndPort endpoint : redisConfig.getEndpoints()) {
-				if (endpoint.isMaster()) {
-					masterSlaveConfig.setMasterAddress(endpoint.toString());
-				} else {
-					masterSlaveConfig.addSlaveAddress(endpoint.toString());
-				}
-			}
-			String loadBalancerType = redisConfig.getLoadBalancer() == null ? "random" : redisConfig.getLoadBalancer();
-			if (loadBalancerType.equalsIgnoreCase("random")) {
-				masterSlaveConfig.setLoadBalancer(new RandomLoadBalancer());
-			} else if (loadBalancerType.equalsIgnoreCase("roundrobin")) {
-				masterSlaveConfig.setLoadBalancer(new RoundRobinLoadBalancer());
-			} else {
-				throw new RuntimeException(
-						"master slave redis servers load balancer type `" + loadBalancerType + "` isn't supported");
-			}
-			break;
-		case SENTINEL:
-			SentinelServersConfig sentielConnectionConfig = config.useSentinelConnection();
-			sentielConnectionConfig.setMasterName(redisConfig.getMasterName());
-			for (HostAndPort endpoint : redisConfig.getEndpoints()) {
-				sentielConnectionConfig.addSentinelAddress(endpoint.toString());
-			}
-			break;
-		case SINGLE:
-			if (redisConfig.getEndpoints().size() > 0) {
-				config.useSingleServer().setAddress(redisConfig.getEndpoints().get(0).toString());
-			} else {
-				getLogger().warn("enpoint config cannot be found, using default location " + DEFAULT_REDIS_ENDPOINT);
-				config.useSingleServer().setAddress(DEFAULT_REDIS_ENDPOINT);
-			}
-			break;
-		default:
-			break;
-		}
-		return Redisson.create(config);
 	}
 
 	private JedisService createJedisService(RedisConfig config) {
@@ -163,8 +94,6 @@ public class CacheManager extends BaseLoggable {
 			redisConfigs.forEach(config -> {
 				// jedis service
 				this.jedisServices.put(config.getName(), createJedisService(config));
-				// redisson
-				this.redissons.put(config.getName(), createRedission(config));
 			});
 		}
 
@@ -200,10 +129,6 @@ public class CacheManager extends BaseLoggable {
 			return this.hazelcastInstances.get(name);
 		}
 		return null;
-	}
-
-	public Redisson getRedisson(String name) {
-		return this.redissons.get(name);
 	}
 
 	public JedisService getJedisServiceByName(String name) {

@@ -25,14 +25,10 @@
 	<classpathentry kind="lib" path="lib/disruptor-3.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/guava-18.0.jar"/>
-	<classpathentry kind="lib" path="lib/hazelcast-all-3.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpasyncclient-4.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.5.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-nio-4.4.4.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-annotations-2.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-2.5.4.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-databind-2.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/javassist-3.18.1-GA.jar"/>
 	<classpathentry kind="lib" path="lib/javax.servlet-api-3.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jdbi-2.62.jar"/>
@@ -65,15 +61,12 @@
 	<classpathentry kind="lib" path="lib/mongo-java-driver-3.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/msgpack-0.6.12.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.35.jar"/>
-	<classpathentry kind="lib" path="lib/netty-3.7.0.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-all-4.0.33.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-buffer-4.0.33.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-codec-4.0.33.Final.jar"/>
-	<classpathentry kind="lib" path="lib/netty-codec-http-4.0.30.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-common-4.0.33.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-handler-4.0.33.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-transport-4.0.33.Final.jar"/>
-	<classpathentry kind="lib" path="lib/redisson-2.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/scala-library-2.10.5.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.12.jar"/>
 	<classpathentry kind="lib" path="lib/snappy-java-1.1.1.7.jar"/>
@@ -82,5 +75,36 @@
 	<classpathentry kind="lib" path="lib/zkclient-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/zookeeper-3.4.6.jar"/>
 	<classpathentry kind="lib" path="lib-local/deadlockmonitor.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/compress-lzf-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/elasticsearch-2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/HdrHistogram-2.1.6.jar"/>
+	<classpathentry kind="lib" path="lib/hppc-0.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-cbor-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-yaml-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/joda-convert-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/joda-time-2.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/jsr166e-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-analyzers-common-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-backward-codecs-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-grouping-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-highlighter-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-join-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-memory-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-misc-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-queries-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-queryparser-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-sandbox-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-spatial-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-spatial3d-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-suggest-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/securesm-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/snakeyaml-1.15.jar"/>
+	<classpathentry kind="lib" path="lib/spatial4j-0.5.jar"/>
+	<classpathentry kind="lib" path="lib/t-digest-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/hazelcast-all-3.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

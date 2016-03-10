@@ -1,7 +1,5 @@
 package com.mario.api;
 
-import org.redisson.Redisson;
-
 import com.hazelcast.core.HazelcastInstance;
 import com.mario.cache.CacheManager;
 import com.mario.entity.EntityManager;
@@ -128,11 +126,6 @@ class MarioApiImpl implements MarioApi {
 		assert name != null;
 		assert this.mongoDBSourceManager != null;
 		return this.mongoDBSourceManager.getMongoClient(name);
-	}
-
-	@Override
-	public Redisson getRedisson(String name) {
-		return this.cacheManager.getRedisson(name);
 	}
 
 	@Override
