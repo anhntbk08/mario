@@ -16,5 +16,4 @@ public interface SocketSession extends EventDispatcher {
 	boolean isActive();
 
 	void close() throws IOException;
-
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.SessionManager;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import com.mario.config.gateway.GatewayType;
 import com.mario.config.gateway.HttpGatewayConfig;
 import com.mario.entity.message.Message;
 import com.mario.entity.message.impl.HttpMessage;
@@ -212,7 +213,9 @@ public class HttpGateway extends AbstractGateway<HttpGatewayConfig>
 			@Override
 			public Message newInstance() {
 				HttpMessage msg = new HttpMessage();
+				msg.setGatewayType(GatewayType.HTTP);
 				msg.setCallback(HttpGateway.this);
+				msg.setGatewayType(GatewayType.HTTP);
 				return msg;
 			}
 		};

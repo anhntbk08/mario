@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.datastax.driver.core.BoundStatement;
@@ -16,6 +17,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.ResultSetFuture;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
+import com.nhb.common.sync.SynchronizedExecutor;
 import com.nhb.common.vo.HostAndPort;
 
 public class CassandraDataSource implements Closeable {
@@ -23,6 +25,9 @@ public class CassandraDataSource implements Closeable {
 	private Cluster cluster;
 	private Session session;
 	private String keyspace;
+
+	private final SynchronizedExecutor<Void> connector = new SynchronizedExecutor<>();
+	private final Map<String, SynchronizedExecutor<PreparedStatement>> statementPreparers = new ConcurrentHashMap<>();
 
 	private final Collection<HostAndPort> endpoints = new HashSet<>();
 	private final Map<String, PreparedStatement> cachedStatements = new ConcurrentHashMap<>();
@@ -102,20 +107,33 @@ public class CassandraDataSource implements Closeable {
 	}
 
 	public void connect() {
-		if (this.endpoints.size() == 0) {
-			throw new RuntimeException("No endpoint defined");
+		try {
+			this.connector.execute(new Callable<Void>() {
+
+				@Override
+				public Void call() throws Exception {
+					if (CassandraDataSource.this.endpoints.size() == 0) {
+						throw new RuntimeException("No endpoint defined");
+					}
+					Builder builder = new Builder();
+					for (HostAndPort endpoint : CassandraDataSource.this.endpoints) {
+						if (endpoint.getPort() <= 0) {
+							builder.addContactPoint(endpoint.getHost());
+						} else {
+							builder.addContactPointsWithPorts(
+									InetSocketAddress.createUnresolved(endpoint.getHost(), endpoint.getPort()));
+						}
+					}
+					CassandraDataSource.this.cluster = builder.build();
+					CassandraDataSource.this.session = CassandraDataSource.this.keyspace != null
+							? CassandraDataSource.this.cluster.connect(CassandraDataSource.this.keyspace)
+							: CassandraDataSource.this.cluster.connect();
+					return null;
+				}
+			}).get();
+		} catch (Exception e) {
+			throw new RuntimeException("Error while connecting to cassandra cluster", e);
 		}
-		Builder builder = new Builder();
-		for (HostAndPort endpoint : this.endpoints) {
-			if (endpoint.getPort() <= 0) {
-				builder.addContactPoint(endpoint.getHost());
-			} else {
-				builder.addContactPointsWithPorts(
-						InetSocketAddress.createUnresolved(endpoint.getHost(), endpoint.getPort()));
-			}
-		}
-		this.cluster = builder.build();
-		this.session = this.keyspace != null ? this.cluster.connect(this.keyspace) : this.cluster.connect();
 	}
 
 	@Override
@@ -152,14 +170,33 @@ public class CassandraDataSource implements Closeable {
 		return this.executeAsync(statement);
 	}
 
-	public PreparedStatement getPreparedStatement(String cql) {
+	public PreparedStatement getPreparedStatement(final String cql) {
 		if (!this.isConnected()) {
 			this.connect();
 		}
 		if (!this.cachedStatements.containsKey(cql)) {
-			this.cachedStatements.put(cql, this.session.prepare(cql));
+			try {
+				return this.getStatementPreparer(cql).execute(new Callable<PreparedStatement>() {
+
+					@Override
+					public PreparedStatement call() throws Exception {
+						PreparedStatement result = session.prepare(cql);
+						cachedStatements.put(cql, result);
+						return result;
+					}
+				}).get();
+			} catch (Exception e) {
+				throw new RuntimeException("Error while preparing statement", e);
+			}
 		}
 		return this.cachedStatements.get(cql);
+	}
+
+	private synchronized SynchronizedExecutor<PreparedStatement> getStatementPreparer(String cql) {
+		if (!this.statementPreparers.containsKey(cql)) {
+			this.statementPreparers.put(cql, new SynchronizedExecutor<PreparedStatement>());
+		}
+		return this.statementPreparers.get(cql);
 	}
 
 	public String getKeyspace() {

@@ -59,8 +59,15 @@
 	</target>
 
 	<target name="deploy" depends="pack">
+		<delete>
+			<fileset dir="${deploy.path}">
+				<include name="${ant.project.name}-build.*.jar" />
+			</fileset>
+		</delete>
 		<copy todir="${deploy.path}">
-			<fileset dir="${dist.ext}" />
+			<fileset dir="${dist.ext}">
+				<exclude name="slf4j*" />
+			</fileset>
 		</copy>
 	</target>
 
