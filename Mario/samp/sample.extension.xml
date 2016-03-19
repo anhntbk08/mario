@@ -142,15 +142,7 @@
 		</http>
 		<kafka>
 			<name>[producer_name]</name>
-			<endpoint>
-				<entry>[host1:port1]</entry>
-				<entry>[host2:port2]</entry>
-			</endpoint>
-			<producertype>[SYNC | ASYNC]</producertype>
-			<compressioncodec>[NONE | GZIP | SNAPPY | LZ4]</compressioncodec>
-			<compressedtopics>[true | false]</compressedtopics>
-			<autocommitinterval>[commit_interval_ms (default 1000ms)]
-			</autocommitinterval>
+			<config>[relative/to/config/file]</config>
 			<topic>[topic_name]</topic>
 		</kafka>
 	</producers>

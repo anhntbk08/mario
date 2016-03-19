@@ -77,8 +77,9 @@ public class HttpClientHelper extends BaseLoggable implements Closeable {
 				}
 			}
 		}
-		getLogger().debug("\n------- REQUEST -------\nURI: {}\nPARAMS: {}\n-----------------------",
-				builder.getUri().toString(), params);
+		// getLogger().debug("\n------- REQUEST -------\nURI: {}\nPARAMS:
+		// {}\n-----------------------",
+		// builder.getUri().toString(), params);
 		HttpAsyncFutureImpl future = new HttpAsyncFutureImpl();
 		Future<HttpResponse> cancelFuture = getAsyncClient().execute(builder.build(), future);
 		future.setCancelFuture(cancelFuture);

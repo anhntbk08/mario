@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 
 import com.nhb.common.data.PuElement;
@@ -51,12 +52,16 @@ public class KafkaMessageConsumer extends BaseEventDispatcher {
 			@Override
 			public void run() {
 				while (!closer.get()) {
-					ConsumerRecords<byte[], PuElement> records = consumer.poll(pollTimeout);
-					Iterator<ConsumerRecord<byte[], PuElement>> it = records.iterator();
-					while (it.hasNext()) {
-						ConsumerRecord<byte[], PuElement> record = it.next();
-						KafkaEvent event = KafkaEvent.newInstance(record);
-						dispatchEvent(event);
+					try {
+						ConsumerRecords<byte[], PuElement> records = consumer.poll(pollTimeout);
+						Iterator<ConsumerRecord<byte[], PuElement>> it = records.iterator();
+						while (it.hasNext()) {
+							ConsumerRecord<byte[], PuElement> record = it.next();
+							KafkaEvent event = KafkaEvent.newInstance(record);
+							dispatchEvent(event);
+						}
+					} catch (WakeupException we) {
+						// do nothing
 					}
 				}
 			}
