@@ -40,7 +40,6 @@ JVM_OPTS="$GC_TUNE \
 $JVM_REMOTE_DEBUGGING \
 -server \
 -d64 -Xms4g -Xmx4g \
--XX:PermSize=512M -XX:MaxPermSize=1G \
 -XX:+HeapDumpOnOutOfMemoryError \
 -XX:HeapDumpPath='logs/dump-$(date +%Y%m%d%H%M%S).hprof' \
 -Dfile.encoding=UTF-8 \

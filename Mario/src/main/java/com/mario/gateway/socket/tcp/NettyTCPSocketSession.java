@@ -95,9 +95,9 @@ public class NettyTCPSocketSession extends ChannelInboundHandlerAdapter implemen
 
 	@Override
 	public void close() throws IOException {
-		this.getChannelHandlerContext().channel().close();
-		this.getChannelHandlerContext().close();
-		this.setChannelHandlerContext(null);
+		this.getChannelHandlerContext().channel().deregister();
+		this.getChannelHandlerContext().channel().disconnect();
+		this.getChannelHandlerContext().disconnect();
 	}
 
 	@Override
@@ -133,7 +133,6 @@ public class NettyTCPSocketSession extends ChannelInboundHandlerAdapter implemen
 		if (_id != null && _receiver != null) {
 			_receiver.sessionClosed(_id);
 		}
-
 	}
 
 	@Override

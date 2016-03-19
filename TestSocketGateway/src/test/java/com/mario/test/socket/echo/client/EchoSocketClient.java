@@ -11,6 +11,7 @@ import com.nhb.common.utils.Initializer;
 import com.nhb.eventdriven.Event;
 import com.nhb.eventdriven.EventHandler;
 import com.nhb.eventdriven.impl.BaseEventHandler;
+import com.nhb.messaging.TransportProtocol;
 import com.nhb.messaging.socket.SocketEvent;
 import com.nhb.messaging.socket.netty.NettySocketClient;
 
@@ -52,8 +53,9 @@ public class EchoSocketClient extends NettySocketClient {
 	}
 
 	private void start() throws IOException {
-		String host = System.getProperty("server.host", "localhost");
-		int port = Integer.valueOf(System.getProperty("server.port", "9999"));
+		String host = System.getProperty("server.host", "10.0.1.103");
+		int port = Integer.valueOf(System.getProperty("server.port", "10000"));
+		this.setProtocol(TransportProtocol.UDT);
 		this.connect(host, port);
 	}
 
