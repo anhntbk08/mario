@@ -53,19 +53,23 @@ public class HttpClientHelper extends BaseLoggable implements Closeable {
 		return this.httpClient;
 	}
 
+	public void initAsync() {
+		synchronized (this) {
+			if (this.httpAsyncClient == null) {
+				if (this.isFollowRedirect()) {
+					this.httpAsyncClient = HttpAsyncClientBuilder.create()
+							.setRedirectStrategy(new LaxRedirectStrategy()).build();
+				} else {
+					this.httpAsyncClient = HttpAsyncClients.createDefault();
+				}
+				((CloseableHttpAsyncClient) this.httpAsyncClient).start();
+			}
+		}
+	}
+
 	private HttpAsyncClient getAsyncClient() {
 		if (this.httpAsyncClient == null) {
-			synchronized (this) {
-				if (this.httpAsyncClient == null) {
-					if (this.isFollowRedirect()) {
-						this.httpAsyncClient = HttpAsyncClientBuilder.create()
-								.setRedirectStrategy(new LaxRedirectStrategy()).build();
-					} else {
-						this.httpAsyncClient = HttpAsyncClients.createDefault();
-					}
-					((CloseableHttpAsyncClient) this.httpAsyncClient).start();
-				}
-			}
+			this.initAsync();
 		}
 		return this.httpAsyncClient;
 	}
@@ -181,8 +185,11 @@ public class HttpClientHelper extends BaseLoggable implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		if (this.httpAsyncClient instanceof Closeable) {
+		if (this.httpAsyncClient != null && this.httpAsyncClient instanceof Closeable) {
 			((Closeable) this.httpAsyncClient).close();
+			getLogger().debug("Http Async Client is closed", new Exception());
+			System.out.println("Http Async Client is closed");
+			new Exception().printStackTrace();
 		}
 	}
 
