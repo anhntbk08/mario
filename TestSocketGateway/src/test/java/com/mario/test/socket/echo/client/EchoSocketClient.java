@@ -53,9 +53,9 @@ public class EchoSocketClient extends NettySocketClient {
 	}
 
 	private void start() throws IOException {
-		String host = System.getProperty("server.host", "10.0.1.103");
-		int port = Integer.valueOf(System.getProperty("server.port", "10000"));
-		this.setProtocol(TransportProtocol.UDT);
+		String host = System.getProperty("server.host", "localhost");
+		int port = Integer.valueOf(System.getProperty("server.port", "9999"));
+		this.setProtocol(TransportProtocol.TCP);
 		this.connect(host, port);
 	}
 
