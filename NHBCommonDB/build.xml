@@ -65,7 +65,7 @@
 			</fileset>
 		</delete>
 		<copy todir="${deploy.path}">
-			<fileset dir="${dist.ext}" />
+			<fileset dir="${dist.jar}"/>
 		</copy>
 	</target>
 
