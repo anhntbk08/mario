@@ -39,10 +39,15 @@ public class HttpClientHelper extends BaseLoggable implements Closeable {
 
 	private HttpClient getSyncClient() {
 		if (this.httpClient == null) {
-			if (this.isFollowRedirect()) {
-				this.httpClient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
-			} else {
-				this.httpClient = HttpClients.createDefault();
+			synchronized (this) {
+				if (this.httpClient == null) {
+					if (this.isFollowRedirect()) {
+						this.httpClient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy())
+								.build();
+					} else {
+						this.httpClient = HttpClients.createDefault();
+					}
+				}
 			}
 		}
 		return this.httpClient;
@@ -50,13 +55,17 @@ public class HttpClientHelper extends BaseLoggable implements Closeable {
 
 	private HttpAsyncClient getAsyncClient() {
 		if (this.httpAsyncClient == null) {
-			if (this.isFollowRedirect()) {
-				this.httpAsyncClient = HttpAsyncClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy())
-						.build();
-			} else {
-				this.httpAsyncClient = HttpAsyncClients.createDefault();
+			synchronized (this) {
+				if (this.httpAsyncClient == null) {
+					if (this.isFollowRedirect()) {
+						this.httpAsyncClient = HttpAsyncClientBuilder.create()
+								.setRedirectStrategy(new LaxRedirectStrategy()).build();
+					} else {
+						this.httpAsyncClient = HttpAsyncClients.createDefault();
+					}
+					((CloseableHttpAsyncClient) this.httpAsyncClient).start();
+				}
 			}
-			((CloseableHttpAsyncClient) this.httpAsyncClient).start();
 		}
 		return this.httpAsyncClient;
 	}

@@ -15,7 +15,7 @@
 		
 		<dependency org="org.msgpack" name="msgpack" rev="0.6.12"/>
 		
-		<dependency org="io.netty" name="netty-all" rev="4.0.33.Final" />
+		<dependency org="io.netty" name="netty-all" rev="4.0.34.Final" />
 		<dependency org="com.barchart.udt" name="barchart-udt-bundle" rev="2.3.0" />
 		
 		<dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5.1"/>
