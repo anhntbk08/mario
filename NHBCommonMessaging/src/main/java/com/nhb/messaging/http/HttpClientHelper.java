@@ -6,15 +6,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Future;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -35,49 +32,42 @@ import com.nhb.common.data.PuXmlHelper;
 
 public class HttpClientHelper extends BaseLoggable implements Closeable {
 
+	private HttpClient httpClient;
+	private HttpAsyncClient httpAsyncClient;
 	private boolean usingMultipath = true;
 	private boolean followRedirect = true;
 
-	private Set<CloseableHttpAsyncClient> asyncClients = new CopyOnWriteArraySet<>();
-
-	private ThreadLocal<HttpAsyncClient> localHttpAsyncClients = new ThreadLocal<HttpAsyncClient>() {
-
-		@Override
-		protected HttpAsyncClient initialValue() {
-			CloseableHttpAsyncClient result = null;
-			if (isFollowRedirect()) {
-				result = HttpAsyncClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
-			} else {
-				result = HttpAsyncClients.createDefault();
-			}
-			if (result != null) {
-				result.start();
-				asyncClients.add(result);
-			}
-			return result;
-		};
-	};
-
-	private ThreadLocal<HttpClient> localHttpClients = new ThreadLocal<HttpClient>() {
-
-		@Override
-		protected HttpClient initialValue() {
-			CloseableHttpClient result = null;
-			if (isFollowRedirect()) {
-				result = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
-			} else {
-				result = HttpClients.createDefault();
-			}
-			return result;
-		};
-	};
-
 	private HttpClient getSyncClient() {
-		return this.localHttpClients.get();
+		if (this.httpClient == null) {
+			synchronized (this) {
+				if (this.httpClient == null) {
+					if (this.isFollowRedirect()) {
+						this.httpClient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy())
+								.build();
+					} else {
+						this.httpClient = HttpClients.createDefault();
+					}
+				}
+			}
+		}
+		return this.httpClient;
 	}
 
 	private HttpAsyncClient getAsyncClient() {
-		return this.localHttpAsyncClients.get();
+		if (this.httpAsyncClient == null) {
+			synchronized (this) {
+				if (this.httpAsyncClient == null) {
+					if (this.isFollowRedirect()) {
+						this.httpAsyncClient = HttpAsyncClientBuilder.create()
+								.setRedirectStrategy(new LaxRedirectStrategy()).build();
+					} else {
+						this.httpAsyncClient = HttpAsyncClients.createDefault();
+					}
+					((CloseableHttpAsyncClient) this.httpAsyncClient).start();
+				}
+			}
+		}
+		return this.httpAsyncClient;
 	}
 
 	public HttpAsyncFuture executeAsync(RequestBuilder builder, PuObjectRO params) {
@@ -191,10 +181,11 @@ public class HttpClientHelper extends BaseLoggable implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		for (CloseableHttpAsyncClient client : this.asyncClients) {
-			if (client.isRunning()) {
-				client.close();
-			}
+		if (this.httpAsyncClient != null && this.httpAsyncClient instanceof Closeable) {
+			((Closeable) this.httpAsyncClient).close();
+		}
+		if (this.httpClient != null) {
+			((Closeable) this.httpClient).close();
 		}
 	}
 
