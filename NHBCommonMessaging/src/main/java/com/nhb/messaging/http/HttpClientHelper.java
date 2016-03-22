@@ -55,9 +55,9 @@ public class HttpClientHelper extends BaseLoggable implements Closeable {
 	}
 
 	private HttpAsyncClient getAsyncClient() {
-		if (this.httpAsyncClient == null || !this.httpAsyncClient.isRunning()) {
+		if (this.httpAsyncClient == null) {
 			synchronized (this) {
-				if (this.httpAsyncClient == null || !this.httpAsyncClient.isRunning()) {
+				if (this.httpAsyncClient == null) {
 					if (this.isFollowRedirect()) {
 						this.httpAsyncClient = HttpAsyncClientBuilder.create()
 								.setRedirectStrategy(new LaxRedirectStrategy()).build();
