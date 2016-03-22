@@ -39,11 +39,8 @@
 		<dependency org="net.jodah" name="lyra" rev="0.5.2" />
 		
 		<!-- Kafka -->
-		<dependency org="org.apache.kafka" name="kafka_2.10" rev="0.9.0.0"/>
+		<dependency org="org.apache.kafka" name="kafka_2.10" rev="0.9.0.1"/>
 		
-		<!-- zero mq -->
-		<dependency org="org.zeromq" name="jeromq" rev="0.3.5" />
-
 		<!-- database -->
 		<dependency org="org.jdbi" name="jdbi" rev="2.62" />
 		<dependency org="net.snaq" name="dbpool" rev="7.0-jdk7" />
@@ -53,7 +50,7 @@
 		<dependency org="org.mongodb" name="mongo-java-driver" rev="3.1.1" />
 		<dependency org="mysql" name="mysql-connector-java" rev="5.1.35" />
 		<!-- <dependency org="org.redisson" name="redisson" rev="2.1.3" /> -->
-		<dependency org="org.elasticsearch" name="elasticsearch" rev="2.2.0"/>
+		<!-- <dependency org="org.elasticsearch" name="elasticsearch" rev="2.2.0"/> -->
 		
 		<dependency org="com.datastax.cassandra" name="cassandra-driver-core" rev="3.0.0"/>
 

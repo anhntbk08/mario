@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.DefaultChannelPromise;
 
 public class NettyTCPSocketSession extends ChannelInboundHandlerAdapter implements Loggable, SocketSession {
 
@@ -90,7 +91,40 @@ public class NettyTCPSocketSession extends ChannelInboundHandlerAdapter implemen
 				this.getChannelHandlerContext().writeAndFlush(response);
 			}
 		}
+	}
 
+	@Override
+	public void sendPromise(Object obj) throws InterruptedException {
+		if (!this.isActive()) {
+			throw new RuntimeException("Channel context hasn't been activated");
+		}
+		if (obj instanceof PuElement) {
+			this.getChannelHandlerContext().writeAndFlush(obj);
+		} else {
+			byte[] bytes = null;
+			if (obj instanceof byte[]) {
+				bytes = (byte[]) obj;
+			} else if (this.serializer != null) {
+				try {
+					Object serialziedObj = this.serializer.encode(obj);
+					if (serialziedObj instanceof byte[]) {
+						bytes = (byte[]) serialziedObj;
+					} else {
+						throw new IllegalArgumentException(
+								"Unable to send message which isn't type of byte array while message serializer doesn't return byte[]");
+					}
+				} catch (Exception e) {
+					throw new RuntimeException("Error while serializing data", e);
+				}
+			}
+			if (bytes != null) {
+				ByteBuf response = Unpooled.buffer(bytes.length);
+				response.writeBytes(bytes);
+				this.getChannelHandlerContext()
+						.writeAndFlush(response, new DefaultChannelPromise(this.getChannelHandlerContext().channel()))
+						.sync();
+			}
+		}
 	}
 
 	@Override
