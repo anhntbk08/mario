@@ -12,7 +12,9 @@ public interface SocketSession extends EventDispatcher {
 	InetSocketAddress getRemoteAddress();
 
 	void send(Object obj);
-
+	
+	void sendPromise(Object obj) throws InterruptedException;
+	
 	boolean isActive();
 
 	void close() throws IOException;

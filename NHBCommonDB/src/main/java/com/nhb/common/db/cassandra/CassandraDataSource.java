@@ -147,17 +147,17 @@ public class CassandraDataSource implements Closeable {
 	}
 
 	public ResultSet execute(Statement statement) {
-		if (this.isConnected()) {
-			return this.session.execute(statement);
+		if (!this.isConnected()) {
+			this.connect();
 		}
-		throw new IllegalStateException("Cluster not connected");
+		return this.session.execute(statement);
 	}
 
 	public ResultSetFuture executeAsync(Statement statement) {
-		if (this.isConnected()) {
-			return this.session.executeAsync(statement);
+		if (!this.isConnected()) {
+			this.connect();
 		}
-		throw new IllegalStateException("Cluster not connected");
+		return this.session.executeAsync(statement);
 	}
 
 	public ResultSet execute(String cql) {

@@ -65,13 +65,7 @@
 			</fileset>
 		</delete>
 		<copy todir="${deploy.path}">
-			<fileset dir="${dist.ext}">
-				<exclude name="slf4j*" />
-				<exclude name="netty*" />
-				<exclude name="kafka*" />
-				<exclude name="http*" />
-				<exclude name="amqp*" />
-			</fileset>
+			<fileset dir="${dist.jar}" />
 		</copy>
 	</target>
 
