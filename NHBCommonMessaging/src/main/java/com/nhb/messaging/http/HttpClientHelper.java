@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -32,8 +33,8 @@ import com.nhb.common.data.PuXmlHelper;
 
 public class HttpClientHelper extends BaseLoggable implements Closeable {
 
-	private HttpClient httpClient;
-	private HttpAsyncClient httpAsyncClient;
+	private CloseableHttpClient httpClient;
+	private CloseableHttpAsyncClient httpAsyncClient;
 	private boolean usingMultipath = true;
 	private boolean followRedirect = true;
 
