@@ -47,6 +47,23 @@ public class HttpGateway extends AbstractGateway<HttpGatewayConfig>
 			}
 			HttpGateway.this.handle(req, resp);
 		}
+
+		@Override
+		protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
+				throws ServletException, IOException {
+			if (req.getRequestURI().endsWith("favicon.ico")) {
+				return;
+			}
+			HttpGateway.this.handle(req, resp);
+		}
+
+		@Override
+		protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			if (req.getRequestURI().endsWith("favicon.ico")) {
+				return;
+			}
+			HttpGateway.this.handle(req, resp);
+		};
 	});
 
 	protected MessageHandlingWorkerPool createWorkerPool() {
