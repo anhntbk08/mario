@@ -27,8 +27,7 @@ public class JsonBodyHttpMessageDeserializer extends HttpMessageDeserializer {
 				params.set(key, value);
 			}
 			if (request.getMethod().equalsIgnoreCase("post")) {
-				try (InputStream is = request.getInputStream()) {
-					StringWriter sw = new StringWriter();
+				try (InputStream is = request.getInputStream(); StringWriter sw = new StringWriter()) {
 					IOUtils.copy(is, sw);
 					params.addAll(PuObject.fromJSON(sw.toString()));
 				} catch (IOException e) {
