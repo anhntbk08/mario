@@ -16,9 +16,9 @@
 
 		<!-- disruptor -->
 		<dependency org="com.lmax" name="disruptor" rev="3.2.0" />
-	
+
 		<!-- serialization -->
-		<dependency org="org.msgpack" name="msgpack" rev="0.6.12"/>
+		<dependency org="org.msgpack" name="msgpack" rev="0.6.12" />
 		<dependency org="net.minidev" name="json-smart" rev="2.1.1" />
 
 		<!-- embed http server -->
@@ -27,37 +27,38 @@
 		<dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.3.7.RC1" />
 
 		<!-- socket nio -->
-		<dependency org="io.netty" name="netty-all" rev="4.0.34.Final"/>
+		<dependency org="io.netty" name="netty-all" rev="4.1.0.CR4" />
+		<!-- <dependency org="io.netty" name="netty-tcnative" rev="1.1.33.Fork15"/> -->
 		<dependency org="com.barchart.udt" name="barchart-udt-bundle" rev="2.3.0" />
 
 		<!-- http clients -->
-		<dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5.1"/>
-		<dependency org="org.apache.httpcomponents" name="httpasyncclient" rev="4.1.1"/>
-		
+		<dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5.1" />
+		<dependency org="org.apache.httpcomponents" name="httpasyncclient" rev="4.1.1" />
+
 		<!-- rabbitmq -->
 		<dependency org="com.rabbitmq" name="amqp-client" rev="3.6.0" />
 		<dependency org="net.jodah" name="lyra" rev="0.5.2" />
-		
+
 		<!-- Kafka -->
-		<dependency org="org.apache.kafka" name="kafka_2.10" rev="0.9.0.1"/>
-		
+		<dependency org="org.apache.kafka" name="kafka_2.10" rev="0.9.0.1" />
+
 		<!-- database -->
 		<dependency org="org.jdbi" name="jdbi" rev="2.62" />
 		<dependency org="net.snaq" name="dbpool" rev="7.0-jdk7" />
-		<dependency org="com.hazelcast" name="hazelcast-all" rev="3.6.1"/>
-		
+		<dependency org="com.hazelcast" name="hazelcast-all" rev="3.6.1" />
+
 		<dependency org="redis.clients" name="jedis" rev="2.8.0" />
 		<dependency org="org.mongodb" name="mongo-java-driver" rev="3.1.1" />
 		<dependency org="mysql" name="mysql-connector-java" rev="5.1.35" />
 		<!-- <dependency org="org.redisson" name="redisson" rev="2.1.3" /> -->
 		<!-- <dependency org="org.elasticsearch" name="elasticsearch" rev="2.2.0"/> -->
-		
-		<dependency org="com.datastax.cassandra" name="cassandra-driver-core" rev="3.0.0"/>
+
+		<dependency org="com.datastax.cassandra" name="cassandra-driver-core" rev="3.0.0" />
 
 		<!-- utilities -->
-		<dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2"/>
-		<dependency org="com.google.guava" name="guava" rev="19.0"/>
-		<dependency org="com.google.code.gson" name="gson" rev="2.3.1" />
+		<dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2" />
+		<dependency org="com.google.guava" name="guava" rev="19.0" />
+		<dependency org="com.google.code.gson" name="gson" rev="2.5" />
 		<dependency org="commons-lang" name="commons-lang" rev="2.6" />
 		<dependency org="javax.mail" name="mail" rev="1.5.0-b01" />
 
