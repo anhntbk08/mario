@@ -36,7 +36,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
 
-@SuppressWarnings("deprecation")
 public class NettyWebSocketSession extends NettyTCPSocketSession {
 
 	private static final String WEBSOCKET_PATH = "/websocket";
