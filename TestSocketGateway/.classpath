@@ -4,10 +4,7 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Mario"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.7.12.jar"/>
-	<classpathentry kind="lib" path="lib/disruptor-3.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommonMessaging"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NHBCommon"/>
-	<classpathentry kind="lib" path="/NHBCommonMessaging/lib/netty-all-4.0.34.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -43,7 +43,8 @@ public class PuValue implements PuElement, Serializable {
 	}
 
 	public boolean getBoolean() {
-		return PrimitiveTypeUtils.getBooleanValueFrom(this.getData());
+		return PrimitiveTypeUtils.getBooleanValueFrom(
+				this.getData() instanceof byte[] ? new String((byte[]) this.getData()) : this.getData());
 	}
 
 	public byte getByte() {

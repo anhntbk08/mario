@@ -569,26 +569,13 @@ class ExtensionConfigReader extends XmlConfigReader {
 			} else if (item.getNodeName().equalsIgnoreCase("mongodb")) {
 				MongoDBConfig config = new MongoDBConfig();
 				config.setName(((Node) xPath.compile("name").evaluate(item, XPathConstants.NODE)).getTextContent());
-				NodeList endpoints = (NodeList) xPath.compile("endpoint/entry").evaluate(item, XPathConstants.NODESET);
-				for (int j = 0; j < endpoints.getLength(); j++) {
-					Node endpointNode = endpoints.item(j);
-					String host = null;
-					int port = -1;
-					try {
-						host = ((Node) xPath.compile("host").evaluate(endpointNode, XPathConstants.NODE))
-								.getTextContent();
-					} catch (Exception ex) {
-						getLogger().warn("host config is invalid : " + endpointNode.getTextContent(), ex);
-					}
-					try {
-						port = Integer
-								.valueOf(((Node) xPath.compile("port").evaluate(endpointNode, XPathConstants.NODE))
-										.getTextContent());
-					} catch (Exception ex) {
-						getLogger().warn("port config is invalid : " + endpointNode.getTextContent(), ex);
-					}
-					if (host != null && port > 0) {
-						config.addEndpoint(host, port);
+				Object endpoint = EndpointReader
+						.read((Node) xPath.compile("endpoint").evaluate(item, XPathConstants.NODE));
+				if (endpoint instanceof HostAndPort) {
+					config.addEndpoint((HostAndPort) endpoint);
+				} else if (endpoint instanceof Collection) {
+					for (HostAndPort hnp : (Collection<HostAndPort>) endpoint) {
+						config.addEndpoint(hnp);
 					}
 				}
 				NodeList credentials = (NodeList) xPath.compile("credentials/entry").evaluate(item,

@@ -47,4 +47,5 @@ public abstract class Fields {
 	public static final String ACCOUNT_ID = "accountId";
 	public static final String CLIENT_ID = "clientId";
 	public static final String ACCESS_TOKEN = "accessToken";
+	public static final String EXTENSION_FOLDER = "application.extensionsFolder";
 }
