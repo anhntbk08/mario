@@ -4,6 +4,23 @@ MAIN_CLASS=com.mario.Mario
 
 kill $(jps -l | grep $MAIN_CLASS | awk '{print $1}');
 
+count=0
+while sleep 0.5
+do
+	pcount=$(jps -l | grep $MAIN_CLASS | wc -l)
+	if [ $pcount -gt 0 ]
+	then
+		let count="$count + 1"
+		if [ $count -gt 6 ]
+		then
+			kill -9 $(jps -l | grep $MAIN_CLASS | awk '{print $1}');
+			break
+		fi
+	else 
+		break
+	fi
+done
+
 WORKING_DIR=${PWD}
 
 $(java -version)
