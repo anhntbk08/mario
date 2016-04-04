@@ -12,7 +12,7 @@
 			smtpHost="10.111.50.83" bufferSize="50">
 			<PatternLayout pattern="${default-pattern-layout}" />
 		</SMTP>
-		<RollingRandomAccessFile name="fileOutputLog" immediateFlush="false" append="true" fileName="${log-path}/console.log" filePattern="${log-path}/console-%d{yyyy-MM-dd}-%H-%i.log">
+		<RollingRandomAccessFile name="fileOutputLog" immediateFlush="false" append="true" fileName="${log-path}/console.log" filePattern="${log-path}/console-%d{yyyy-MM-dd}-%d{HH}-%i.log">
 			<PatternLayout pattern="${default-pattern-layout}" />
 			<Policies>
 				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
@@ -23,7 +23,7 @@
 		<Console name="console" target="SYSTEM_OUT">
 			<PatternLayout pattern="${debug-pattern-layout}" />
 		</Console>
-		<RollingRandomAccessFile name="fileOutputLogBlankInfo" immediateFlush="true" append="true" fileName="${log-path}/console.log" filePattern="${log-path}/console-%d{yyyy-MM-dd}-%H-%i.log">
+		<RollingRandomAccessFile name="fileOutputLogBlankInfo" immediateFlush="true" append="true" fileName="${log-path}/console.log" filePattern="${log-path}/console-%d{yyyy-MM-dd}-%d{HH}-%i.log">
 			<PatternLayout pattern="${blank-pattern-layout}" />
 			<Policies>
 				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
