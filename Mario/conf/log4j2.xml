@@ -8,14 +8,14 @@
 		<Property name="debug-pattern-layout">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} (%F:%L) - %msg%n</Property>
 	</Properties>
 	<Appenders>
-		<SMTP name="sendEmailToBachNHAppender" smtpPort="25" subject="[TAP - Mario Consumer]" smtpUsername="tracer" smtpPassword="tap123456" to="thanhlv@tapstudiovn.com"
-			from="tracer@tapstudiovn.com" smtpHost="10.111.50.83" bufferSize="50">
+		<SMTP name="sendEmailToBachNHAppender" smtpPort="25" subject="[TAP - Mario Consumer]" smtpUsername="tracer" smtpPassword="tap123456" to="thanhlv@tapstudiovn.com" from="tracer@tapstudiovn.com"
+			smtpHost="10.111.50.83" bufferSize="50">
 			<PatternLayout pattern="${default-pattern-layout}" />
 		</SMTP>
-		<RollingRandomAccessFile name="fileOutputLog" immediateFlush="false" append="true" fileName="${log-path}/console.log"
-			filePattern="${log-path}/console-%d{yyyy-MM-dd}-%i.log">
+		<RollingRandomAccessFile name="fileOutputLog" immediateFlush="false" append="true" fileName="${log-path}/console.log" filePattern="${log-path}/console-%d{yyyy-MM-dd}-%d{HH}-%i.log">
 			<PatternLayout pattern="${default-pattern-layout}" />
 			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
 				<SizeBasedTriggeringPolicy size="64MB" />
 			</Policies>
 			<!-- <DefaultRolloverStrategy max="4" /> -->
@@ -23,10 +23,10 @@
 		<Console name="console" target="SYSTEM_OUT">
 			<PatternLayout pattern="${debug-pattern-layout}" />
 		</Console>
-		<RollingRandomAccessFile name="fileOutputLogBlankInfo" immediateFlush="true" append="true" fileName="${log-path}/console.log"
-			filePattern="${log-path}/console-%d{yyyy-MM-dd}-%i.log">
+		<RollingRandomAccessFile name="fileOutputLogBlankInfo" immediateFlush="true" append="true" fileName="${log-path}/console.log" filePattern="${log-path}/console-%d{yyyy-MM-dd}-%d{HH}-%i.log">
 			<PatternLayout pattern="${blank-pattern-layout}" />
 			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
 				<SizeBasedTriggeringPolicy size="64MB" />
 			</Policies>
 		</RollingRandomAccessFile>
