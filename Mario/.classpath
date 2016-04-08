@@ -23,7 +23,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-math3-3.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-pool2-2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/dbpool-7.0-jdk7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/disruptor-3.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guava-19.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hazelcast-all-3.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpasyncclient-4.1.1.jar"/>
@@ -57,7 +56,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/mail-1.5.0-b01.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/metrics-core-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/metrics-core-3.1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mongo-java-driver-3.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/msgpack-0.6.12.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-5.1.35.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/scala-library-2.10.5.jar"/>
@@ -71,5 +69,16 @@
 	<classpathentry exported="true" kind="lib" path="lib/netty-all-4.1.0.CR4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json-simple-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-local/netty-tcnative-1.1.33.Fork14.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mongo-java-driver-3.2.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="https://api.mongodb.org/java/3.2/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/java-uuid-generator-3.1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/disruptor-3.3.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="https://lmax-exchange.github.io/disruptor/docs/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

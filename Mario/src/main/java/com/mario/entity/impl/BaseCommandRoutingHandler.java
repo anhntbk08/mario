@@ -51,6 +51,17 @@ public abstract class BaseCommandRoutingHandler extends BaseMessageHandler {
 				throw new ProcessCommandExcepion(e);
 			}
 		}
-		return null;
+		throw new RuntimeException("Command cannot be null");
+	}
+
+	protected CommandResponseData processCommand(String type, Message message) {
+		if (type != null) {
+			try {
+				return this.commandController.processCommand(type, message);
+			} catch (Exception e) {
+				throw new ProcessCommandExcepion(e);
+			}
+		}
+		throw new RuntimeException("Command cannot be null");
 	}
 }
