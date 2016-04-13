@@ -136,9 +136,16 @@ public class PuArrayList extends ArrayList<PuValue> implements PuArray {
 
 	@Override
 	public PuObject getPuObject(int index) {
-		Object obj = this.get(index);
+		Object obj = this.get(index).getData();
+		if (obj == null) {
+			return null;
+		}
 		if (obj instanceof PuObject) {
 			return (PuObject) obj;
+		}
+		if (PrimitiveTypeUtils.isPrimitiveOrWrapperType(obj.getClass())
+				|| ArrayUtils.isArrayOrCollection(obj.getClass())) {
+			throw new RuntimeException("Cannot convert primitive type or array/collection to PuObject");
 		}
 		return PuObject.fromObject(obj);
 	}
@@ -146,8 +153,13 @@ public class PuArrayList extends ArrayList<PuValue> implements PuArray {
 	@Override
 	public PuArray getPuArray(int index) {
 		Object obj = this.get(index).getData();
+		if (obj == null) {
+			return null;
+		}
 		if (obj instanceof PuArray) {
 			return (PuArray) obj;
+		} else if (!ArrayUtils.isArrayOrCollection(obj.getClass())) {
+			throw new RuntimeException("Cannot convert non-array/non-collection to PuArray");
 		}
 		return PuArrayList.fromObject(obj);
 	}
