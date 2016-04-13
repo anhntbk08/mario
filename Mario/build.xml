@@ -2,7 +2,7 @@
 
 	<buildnumber file="build.number" />
 	<!-- some variables used -->
-	<property name="version">3.6.0</property>
+	<property name="version">3.6.1</property>
 	<property name="app-name">Mario-${version}</property>
 	<property name="jar.name">${ant.project.name}-build.${build.number}</property>
 	<property name="lib.dir" value="lib" />

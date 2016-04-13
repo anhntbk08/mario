@@ -111,6 +111,8 @@ public class CacheManager extends BaseLoggable {
 					}
 					initializer = this.extensionManager.newInstance(config.getExtensionName(),
 							config.getInitializerClass());
+				}
+				if (initializer != null) {
 					initializer.prepare(hazelcastConfig);
 				}
 				hazelcastInstances.put(config.getName(), hazelcastConfig == null ? Hazelcast.newHazelcastInstance()
@@ -153,6 +155,9 @@ public class CacheManager extends BaseLoggable {
 
 	public HazelcastInstance getHazelcastInstance(String name) {
 		if (this.hazelcastInstances.containsKey(name)) {
+			return this.hazelcastInstances.get(name);
+		} else if (this.lazyInitConfigs.containsKey(name)) {
+			this.initHazelcast(this.lazyInitConfigs.get(name), null);
 			return this.hazelcastInstances.get(name);
 		}
 		return null;
