@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
@@ -13,8 +14,10 @@ import com.hazelcast.config.Config;
 import com.hazelcast.config.XmlConfigBuilder;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.mario.cache.hazelcast.HazelcastInitializer;
 import com.mario.config.HazelcastConfig;
 import com.mario.config.RedisConfig;
+import com.mario.extension.ExtensionManager;
 import com.nhb.common.BaseLoggable;
 import com.nhb.common.cache.jedis.JedisService;
 import com.nhb.common.utils.FileSystemUtils;
@@ -30,9 +33,14 @@ public class CacheManager extends BaseLoggable {
 	private Map<String, HazelcastInstance> hazelcastInstances;
 	private Map<String, JedisService> jedisServices;
 
-	public CacheManager() {
+	private ExtensionManager extensionManager;
+
+	private final Map<String, HazelcastConfig> lazyInitConfigs = new ConcurrentHashMap<>();
+
+	public CacheManager(ExtensionManager extMan) {
 		this.hazelcastInstances = new HashMap<>();
 		this.jedisServices = new HashMap<>();
+		this.extensionManager = extMan;
 	}
 
 	public void stop() {
@@ -88,6 +96,41 @@ public class CacheManager extends BaseLoggable {
 		return jedisService;
 	}
 
+	private void initHazelcast(HazelcastConfig config, HazelcastInitializer initializer) {
+		if (config.isMember()) {
+			try {
+				Config hazelcastConfig = null;
+				if (config.getConfigFilePath() != null) {
+					hazelcastConfig = new XmlConfigBuilder(FileSystemUtils.createAbsolutePathFrom(
+							System.getProperty("application.extensionsFolder", "extensions"), config.getExtensionName(),
+							config.getConfigFilePath())).build();
+				}
+				if (initializer == null && config.getInitializerClass() != null) {
+					if (hazelcastConfig == null) {
+						hazelcastConfig = new Config();
+					}
+					initializer = this.extensionManager.newInstance(config.getExtensionName(),
+							config.getInitializerClass());
+					initializer.prepare(hazelcastConfig);
+				}
+				hazelcastInstances.put(config.getName(), hazelcastConfig == null ? Hazelcast.newHazelcastInstance()
+						: Hazelcast.newHazelcastInstance(hazelcastConfig));
+			} catch (Exception e) {
+				getLogger().error("init hazelcast config error: ", e);
+			}
+		} else {
+			try {
+				ClientConfig hazelcastConfig = new XmlClientConfigBuilder(FileSystemUtils.createAbsolutePathFrom(
+						System.getProperty("application.extensionsFolder", "extensions"), config.getExtensionName(),
+						config.getConfigFilePath())).build();
+
+				hazelcastInstances.put(config.getName(), HazelcastClient.newHazelcastClient(hazelcastConfig));
+			} catch (Exception e) {
+				getLogger().error("init hazelcast config error: ", e);
+			}
+		}
+	}
+
 	public void start(List<HazelcastConfig> hazelcastConfigs, List<RedisConfig> redisConfigs) {
 
 		if (redisConfigs != null && redisConfigs.size() > 0) {
@@ -99,26 +142,10 @@ public class CacheManager extends BaseLoggable {
 
 		if (hazelcastConfigs != null && hazelcastConfigs.size() > 0) {
 			hazelcastConfigs.parallelStream().forEach(config -> {
-				if (config.isMember()) {
-					try {
-						Config hazelcastConfig = new XmlConfigBuilder(FileSystemUtils.createAbsolutePathFrom(
-								System.getProperty("application.extensionsFolder", "extensions"),
-								config.getExtensionName(), config.getConfigFilePath())).build();
-						hazelcastInstances.put(config.getName(), Hazelcast.newHazelcastInstance(hazelcastConfig));
-					} catch (Exception e) {
-						getLogger().error("init hazelcast config error: ", e);
-					}
+				if (config.isLazyInit()) {
+					this.lazyInitConfigs.put(config.getName(), config);
 				} else {
-					try {
-						ClientConfig hazelcastConfig = new XmlClientConfigBuilder(
-								FileSystemUtils.createAbsolutePathFrom(
-										System.getProperty("application.extensionsFolder", "extensions"),
-										config.getExtensionName(), config.getConfigFilePath())).build();
-
-						hazelcastInstances.put(config.getName(), HazelcastClient.newHazelcastClient(hazelcastConfig));
-					} catch (Exception e) {
-						getLogger().error("init hazelcast config error: ", e);
-					}
+					this.initHazelcast(config, null);
 				}
 			});
 		}
@@ -126,6 +153,16 @@ public class CacheManager extends BaseLoggable {
 
 	public HazelcastInstance getHazelcastInstance(String name) {
 		if (this.hazelcastInstances.containsKey(name)) {
+			return this.hazelcastInstances.get(name);
+		}
+		return null;
+	}
+
+	public HazelcastInstance getHazelcastInstance(String name, HazelcastInitializer initializer) {
+		if (this.hazelcastInstances.containsKey(name)) {
+			return this.hazelcastInstances.get(name);
+		} else if (this.lazyInitConfigs.containsKey(name)) {
+			this.initHazelcast(this.lazyInitConfigs.get(name), initializer);
 			return this.hazelcastInstances.get(name);
 		}
 		return null;

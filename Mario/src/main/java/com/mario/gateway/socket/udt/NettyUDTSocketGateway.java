@@ -20,6 +20,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
+@SuppressWarnings("deprecation")
 public class NettyUDTSocketGateway extends NettyTCPSocketGateway {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -17,7 +17,7 @@ import com.mario.entity.message.MessageRW;
 import com.mario.entity.message.transcoder.MessageDecoder;
 import com.nhb.common.BaseLoggable;
 
-public class MessageHandlingWorkerPool extends BaseLoggable implements ExceptionHandler {
+public class MessageHandlingWorkerPool extends BaseLoggable implements ExceptionHandler<Message> {
 
 	public static final MessageHandlingWorkerPool DEFAULT = new MessageHandlingWorkerPool();
 
@@ -113,12 +113,12 @@ public class MessageHandlingWorkerPool extends BaseLoggable implements Exception
 	}
 
 	@Override
-	public void handleEventException(Throwable exception, long sequence, Object message) {
+	public void handleEventException(Throwable exception, long sequence, Message message) {
 		if (messageHandleCallback != null) {
-			messageHandleCallback.onHandleError(((Message) message), exception);
+			messageHandleCallback.onHandleError(message, exception);
 		} else {
 			getLogger().error("An error occurs when handling message at sequence: {}, data: {}", sequence,
-					((Message) message).getData(), exception);
+					message.getData(), exception);
 		}
 	}
 
