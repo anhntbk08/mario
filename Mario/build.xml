@@ -2,11 +2,12 @@
 
 	<buildnumber file="build.number" />
 	<!-- some variables used -->
-	<property name="version">3.6.2</property>
+	<property name="version">3.6.3</property>
 	<property name="app-name">Mario-${version}</property>
 	<property name="jar.name">${ant.project.name}-build.${build.number}</property>
 	<property name="lib.dir" value="lib" />
 	<property name="lib-local.dir" value="lib-local" />
+	<property name="lib-boot.dir" value="lib-boot" />
 	<property name="build.classes" value="bin" />
 	<property name="src.dir" value="src" />
 	<property name="conf" value="conf" />
@@ -14,6 +15,7 @@
 	<property name="dist" value="dist/${app-name}" />
 	<property name="build.jar" value="dist/jar" />
 	<property name="dist.lib" value="${dist}/lib" />
+	<property name="dist.lib.boot" value="${dist}/lib-boot" />
 	<property name="dist.ext" value="${dist}/extensions" />
 	<property name="dist.conf" value="${dist}/conf" />
 	<property name="extensions" value="extensions" />
@@ -87,6 +89,12 @@
 		</copy>
 		<copy todir="${dist.lib}">
 			<fileset dir="${lib-local.dir}">
+				<include name="*.jar" />
+				<exclude name="slf4j-log4j*" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.lib.boot}">
+			<fileset dir="${lib-boot.dir}">
 				<include name="*.jar" />
 				<exclude name="slf4j-log4j*" />
 			</fileset>
