@@ -84,5 +84,6 @@
 			<attribute name="javadoc_location" value="https://lmax-exchange.github.io/disruptor/docs/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib-local/GaiaUAMS-API-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
