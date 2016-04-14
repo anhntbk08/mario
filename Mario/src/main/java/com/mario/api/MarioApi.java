@@ -1,6 +1,7 @@
 package com.mario.api;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.mario.cache.hazelcast.HazelcastInitializer;
 import com.mario.entity.message.Message;
 import com.mario.gateway.Gateway;
 import com.mario.gateway.socket.SocketSession;
@@ -30,6 +31,8 @@ public interface MarioApi {
 	MongoClient getMongoClient(String name);
 
 	HazelcastInstance getHazelcastInstance(String name);
+
+	HazelcastInstance getHazelcastInstance(String name, HazelcastInitializer initializer);
 
 	JedisService getJedisService(String name);
 

@@ -49,6 +49,9 @@
 
 		<hazelcast>
 			<name>default-hazelcast</name>
+			<!-- if initializer is set, but lazy init is true, when extension use getApi().getHazelcast(name, initializer), the initializer class will be ignored -->
+			<initializer>[class_will_handle_init_config_berfore_hazelcast_instance_be_created]</initializer>
+			<lazyinit>[true | false : default is false ]</lazyinit>
 			<member>[ true | false ]</member>
 			<config>[/relative/path/to/configfile]</config>
 		</hazelcast>
