@@ -12,7 +12,7 @@ import com.lmax.disruptor.WorkerPool;
 import com.mario.schedule.ScheduledCallback;
 import com.nhb.common.BaseLoggable;
 
-final class ScheduledEventExecutor extends BaseLoggable implements ExceptionHandler {
+final class ScheduledEventExecutor extends BaseLoggable implements ExceptionHandler<ScheduledEvent> {
 
 	private static final ScheduledEventExecutor instance = new ScheduledEventExecutor();
 
@@ -40,8 +40,8 @@ final class ScheduledEventExecutor extends BaseLoggable implements ExceptionHand
 		}, this, workers);
 
 		this.ringBuffer = workerPool.start(new ThreadPoolExecutor(numWorkers, numWorkers, 6l, TimeUnit.SECONDS,
-				new LinkedBlockingDeque<Runnable>(), new ThreadFactoryBuilder().setNameFormat("Scheduled Executor #%d")
-						.build()));
+				new LinkedBlockingDeque<Runnable>(),
+				new ThreadFactoryBuilder().setNameFormat("Scheduled Executor #%d").build()));
 	}
 
 	void publish(ScheduledCallback callback) {
@@ -58,7 +58,7 @@ final class ScheduledEventExecutor extends BaseLoggable implements ExceptionHand
 	}
 
 	@Override
-	public void handleEventException(Throwable ex, long sequence, Object event) {
+	public void handleEventException(Throwable ex, long sequence, ScheduledEvent event) {
 		getLogger().error("handling scheduled event error", ex);
 	}
 

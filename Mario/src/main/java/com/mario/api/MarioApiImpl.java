@@ -2,6 +2,7 @@ package com.mario.api;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.mario.cache.CacheManager;
+import com.mario.cache.hazelcast.HazelcastInitializer;
 import com.mario.entity.EntityManager;
 import com.mario.entity.ManagedObject;
 import com.mario.entity.MessageHandler;
@@ -157,6 +158,11 @@ class MarioApiImpl implements MarioApi {
 	@Override
 	public CassandraDataSource getCassandraDataSource(String name) {
 		return this.cassandraDatasourceManager == null ? null : this.cassandraDatasourceManager.getDatasource(name);
+	}
+
+	@Override
+	public HazelcastInstance getHazelcastInstance(String name, HazelcastInitializer initializer) {
+		return this.cacheManager.getHazelcastInstance(name, initializer);
 	}
 
 }
