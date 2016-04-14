@@ -35,6 +35,7 @@ import com.mario.config.serverwrapper.HttpServerWrapperConfig;
 import com.mario.config.serverwrapper.RabbitMQServerWrapperConfig;
 import com.mario.config.serverwrapper.ServerWrapperConfig;
 import com.mario.config.serverwrapper.ServerWrapperConfig.ServerWrapperType;
+import com.mario.extension.xml.CredentialReader;
 import com.mario.extension.xml.EndpointReader;
 import com.mario.gateway.http.JettyHttpServerOptions;
 import com.mario.gateway.socket.SocketProtocol;
@@ -127,6 +128,7 @@ class ExtensionConfigReader extends XmlConfigReader {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void readServerWrapperConfigs(Node node) throws XPathExpressionException {
 		this.serverWrapperConfigs = new ArrayList<>();
 		if (node == null) {
@@ -166,48 +168,38 @@ class ExtensionConfigReader extends XmlConfigReader {
 				}
 				case RABBITMQ: {
 					RabbitMQServerWrapperConfig rabbitMQServerWrapperConfig = new RabbitMQServerWrapperConfig();
-					NodeList endpoints = (NodeList) xPath.compile("endpoint/entry").evaluate(item,
-							XPathConstants.NODESET);
-					for (int j = 0; j < endpoints.getLength(); j++) {
-						Node endpointNode = endpoints.item(j);
-						String host = null;
-						int port = -1;
-						try {
-							host = ((Node) xPath.compile("host").evaluate(endpointNode, XPathConstants.NODE))
-									.getTextContent();
-						} catch (Exception ex) {
-							getLogger().warn("host config is invalid : " + endpointNode.getTextContent(), ex);
+					Node curr = item.getFirstChild();
+					while (curr != null) {
+						if (curr.getNodeType() == 1) {
+							String nodeName = curr.getNodeName().trim().toLowerCase();
+							switch (nodeName) {
+							case "endpoint":
+								Object endpoint = EndpointReader.read(curr);
+								if (endpoint instanceof HostAndPort) {
+									rabbitMQServerWrapperConfig.addEndpoint((HostAndPort) endpoint);
+								} else if (endpoint instanceof Collection) {
+									rabbitMQServerWrapperConfig.addEndpoints((Collection<HostAndPort>) endpoint);
+								}
+								break;
+							case "credential":
+								Object credential = CredentialReader.read(curr);
+								if (credential instanceof UserNameAndPassword) {
+									rabbitMQServerWrapperConfig.setCredential((UserNameAndPassword) credential);
+								}
+								break;
+							case "name":
+								rabbitMQServerWrapperConfig.setName(curr.getTextContent().trim());
+								break;
+							case "autoreconnect":
+								getLogger().warn("Autoreconnect is default and cannot be set, it's deprecated");
+								break;
+							default:
+								throw new RuntimeException("invalid tag name: " + curr.getNodeName());
+							}
 						}
-						try {
-							port = Integer
-									.valueOf(((Node) xPath.compile("port").evaluate(endpointNode, XPathConstants.NODE))
-											.getTextContent());
-						} catch (Exception ex) {
-							getLogger().warn("port config is invalid : " + endpointNode.getTextContent(), ex);
-						}
-						if (host != null && port > 0) {
-							HostAndPort endpoint = new HostAndPort(host, port);
-							rabbitMQServerWrapperConfig.addEndpoint(endpoint);
-						}
-					}
-					String userName = null;
-					String password = null;
-					try {
-						userName = ((Node) xPath.compile("credential/username").evaluate(item, XPathConstants.NODE))
-								.getTextContent();
-					} catch (Exception e) {
-						// do nothing
-					}
-					try {
-						password = ((Node) xPath.compile("credential/password").evaluate(item, XPathConstants.NODE))
-								.getTextContent();
-					} catch (Exception e) {
-						// do nothing
+						curr = curr.getNextSibling();
 					}
 
-					rabbitMQServerWrapperConfig.setName(
-							((Node) xPath.compile("name").evaluate(item, XPathConstants.NODE)).getTextContent());
-					rabbitMQServerWrapperConfig.setCredential(new UserNameAndPassword(userName, password));
 					this.serverWrapperConfigs.add(rabbitMQServerWrapperConfig);
 					break;
 				}
@@ -480,7 +472,7 @@ class ExtensionConfigReader extends XmlConfigReader {
 				while (curr != null) {
 					if (curr.getNodeType() == 1) {
 						String value = curr.getTextContent().trim();
-						switch (curr.getNodeName().trim()) {
+						switch (curr.getNodeName().trim().toLowerCase()) {
 						case "name":
 							config.setName(value);
 							break;
@@ -491,6 +483,14 @@ class ExtensionConfigReader extends XmlConfigReader {
 						case "member":
 						case "ismember":
 							config.setMember(Boolean.valueOf(value));
+							break;
+						case "initializer":
+						case "initializerClass":
+							config.setInitializerClass(value);
+							break;
+						case "lazyinit":
+						case "islazyinit":
+							config.setLazyInit(Boolean.valueOf(value));
 							break;
 						default:
 							break;

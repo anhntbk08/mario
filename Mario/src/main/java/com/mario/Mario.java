@@ -77,11 +77,11 @@ public final class Mario extends BaseLoggable {
 
 		this.schedulerFactory = SchedulerFactory.getInstance();
 		this.mongoDBSourceManager = new MongoDBSourceManager();
-		this.cacheManager = new CacheManager();
 		this.serverWrapperManager = new ServerWrapperManager();
 		this.producerManager = new MessageProducerManager(this.serverWrapperManager);
 		this.sqlDataSourceManager = new SQLDataSourceManager();
 		this.extensionManager = new ExtensionManager();
+		this.cacheManager = new CacheManager(this.extensionManager);
 		this.extensionManager.load();
 
 		this.cassandraDatasourceManager = new CassandraDatasourceManager();
