@@ -1,6 +1,9 @@
 package com.nhb.common.vo;
 
-public class UserNameAndPassword {
+import com.nhb.common.BaseLoggable;
+
+public class UserNameAndPassword extends BaseLoggable {
+
 	private String userName;
 	private String password;
 

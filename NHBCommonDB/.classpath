@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Lombok"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/NHBCommon"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-2.7.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cassandra-driver-core-3.0.0.jar"/>

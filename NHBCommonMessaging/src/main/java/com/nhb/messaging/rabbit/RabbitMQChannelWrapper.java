@@ -74,7 +74,7 @@ public abstract class RabbitMQChannelWrapper extends BaseEventDispatcher impleme
 		}
 		this.isStopping.set(true);
 		this._stop();
-		if (this.channel != null) {
+		if (this.channel != null && this.channel.isOpen()) {
 			try {
 				this.channel.close();
 				this.channel.removeShutdownListener(channelShutdownListener);

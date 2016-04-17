@@ -84,5 +84,8 @@
 			<attribute name="javadoc_location" value="https://lmax-exchange.github.io/disruptor/docs/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/java-client-2.2.6.jar"/>
+	<classpathentry kind="lib" path="lib/core-io-1.2.7.jar"/>
+	<classpathentry kind="lib" path="lib/rxjava-1.0.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

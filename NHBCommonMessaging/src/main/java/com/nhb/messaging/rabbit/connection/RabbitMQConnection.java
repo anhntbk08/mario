@@ -20,7 +20,7 @@ public class RabbitMQConnection extends BaseLoggable implements Closeable {
 
 		@Override
 		public void shutdownCompleted(ShutdownSignalException ex) {
-			getLogger().error("Channel closed, method: {}", ex == null ? "null" : ex.getReason(), ex);
+			getLogger().info(ex.getMessage());
 		}
 	};
 

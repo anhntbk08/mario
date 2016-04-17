@@ -19,6 +19,8 @@ public class ModelFactory {
 	private HazelcastInstance hazelcast;
 	private MongoClient mongoClient;
 
+	private final Map<String, Object> environmentVariables = new ConcurrentHashMap<>();
+
 	private final Map<String, String> implMap = new ConcurrentHashMap<>();
 
 	private CassandraDAOFactory cassandraDAOFactory;
@@ -71,7 +73,7 @@ public class ModelFactory {
 			model.setHazelcast(this.getHazelcast());
 			model.setMongoClient(this.getMongoClient());
 			model.setCassandraDAOFactory(this.getCassandraDAOFactory());
-			model.silentInit();
+			model.silentInit(this.environmentVariables);
 			return model;
 		} catch (Exception ex) {
 			throw new RuntimeException("Create model instance error: ", ex);
@@ -138,4 +140,15 @@ public class ModelFactory {
 		}
 	}
 
+	public void setEnvironmentVariable(String key, Object value) {
+		this.environmentVariables.put(key, value);
+	}
+
+	public void removeEnvironmentVariable(String key) {
+		this.environmentVariables.remove(key);
+	}
+
+	public Object getEnvironmentVariable(String key) {
+		return this.environmentVariables.get(key);
+	}
 }
