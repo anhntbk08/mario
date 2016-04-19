@@ -53,7 +53,7 @@ GC_TUNE="-XX:+UseParNewGC \
 
 JVM_OPTS="$GC_TUNE \
 -server \
--d64 -Xms512M -Xmx512M \
+-d64 -Xms1G -Xmx1G \
 -XX:+HeapDumpOnOutOfMemoryError \
 -XX:HeapDumpPath='logs/dump-$(date +%Y%m%d%H%M%S).hprof' \
 -Dfile.encoding=UTF-8 \
