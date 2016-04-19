@@ -28,7 +28,7 @@ public class RabbitMQRPCProducer extends RabbitMQProducer<RPCFuture<PuElement>> 
 	public RabbitMQRPCProducer(RabbitMQConnection connection, RabbitMQQueueConfig queueConfig) {
 		super(connection, queueConfig);
 	}
-	
+
 	public RabbitMQRPCProducer(RabbitMQConnectionPool connectionPool, RabbitMQQueueConfig queueConfig) {
 		super(connectionPool, queueConfig);
 	}
@@ -94,7 +94,7 @@ public class RabbitMQRPCProducer extends RabbitMQProducer<RPCFuture<PuElement>> 
 
 	@Override
 	protected void _start() {
-
+		getLogger().info("RabbitMQRPCProducer has started successfully!!!");
 	}
 
 	@Override
