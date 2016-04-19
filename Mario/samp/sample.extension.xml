@@ -40,15 +40,32 @@
 			</endpoint>
 			<credentials>
 				<entry>
-					<username>admin</username>
-					<password>admin</password>
-					<authdb>admin</authdb>
+					<username>[userName]</username>
+					<password>[password]</password>
+					<authdb>[authdb]</authdb>
 				</entry>
 			</credentials>
+			<!-- optional read preference config, null by default -->
+			<readpreference>
+				<name>[NEAREST | PRIMARY | SECONDARY | SECONDARY_PREFERRED | PRIMARY_PREFERRED, default is primary, case insensitive]</name>
+				<!-- tag set list is optional, default by null -->
+				<tagSetList>
+					<!-- multi tag set can be configured here -->
+					<tagSet>
+						<!-- multi tag can be configured here -->
+						<tag name="[tagName_1]">[tagValue_1]</tag>
+						<tag name="[tagName_2]">[tagValue_2]</tag>
+						<tag name="[tagName_n]">[tagValue_n]</tag>
+					</tagSet>
+				</tagSetList>
+			</readpreference>
 		</mongodb>
 
 		<hazelcast>
 			<name>default-hazelcast</name>
+			<!-- if initializer is set, but lazy init is true, when extension use getApi().getHazelcast(name, initializer), the initializer class will be ignored -->
+			<initializer>[class_will_handle_init_config_berfore_hazelcast_instance_be_created]</initializer>
+			<lazyinit>[true | false : default is false ]</lazyinit>
 			<member>[ true | false ]</member>
 			<config>[/relative/path/to/configfile]</config>
 		</hazelcast>

@@ -35,6 +35,7 @@ import com.mario.config.serverwrapper.HttpServerWrapperConfig;
 import com.mario.config.serverwrapper.RabbitMQServerWrapperConfig;
 import com.mario.config.serverwrapper.ServerWrapperConfig;
 import com.mario.config.serverwrapper.ServerWrapperConfig.ServerWrapperType;
+import com.mario.extension.xml.CredentialReader;
 import com.mario.extension.xml.EndpointReader;
 import com.mario.gateway.http.JettyHttpServerOptions;
 import com.mario.gateway.socket.SocketProtocol;
@@ -42,6 +43,7 @@ import com.nhb.common.data.PuObject;
 import com.nhb.common.db.cassandra.CassandraDatasourceConfig;
 import com.nhb.common.db.mongodb.config.MongoDBConfig;
 import com.nhb.common.db.mongodb.config.MongoDBCredentialConfig;
+import com.nhb.common.db.mongodb.config.MongoDBReadPreferenceConfig;
 import com.nhb.common.db.sql.SQLDataSourceConfig;
 import com.nhb.common.exception.UnsupportedTypeException;
 import com.nhb.common.vo.HostAndPort;
@@ -127,6 +129,7 @@ class ExtensionConfigReader extends XmlConfigReader {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void readServerWrapperConfigs(Node node) throws XPathExpressionException {
 		this.serverWrapperConfigs = new ArrayList<>();
 		if (node == null) {
@@ -166,48 +169,38 @@ class ExtensionConfigReader extends XmlConfigReader {
 				}
 				case RABBITMQ: {
 					RabbitMQServerWrapperConfig rabbitMQServerWrapperConfig = new RabbitMQServerWrapperConfig();
-					NodeList endpoints = (NodeList) xPath.compile("endpoint/entry").evaluate(item,
-							XPathConstants.NODESET);
-					for (int j = 0; j < endpoints.getLength(); j++) {
-						Node endpointNode = endpoints.item(j);
-						String host = null;
-						int port = -1;
-						try {
-							host = ((Node) xPath.compile("host").evaluate(endpointNode, XPathConstants.NODE))
-									.getTextContent();
-						} catch (Exception ex) {
-							getLogger().warn("host config is invalid : " + endpointNode.getTextContent(), ex);
+					Node curr = item.getFirstChild();
+					while (curr != null) {
+						if (curr.getNodeType() == 1) {
+							String nodeName = curr.getNodeName().trim().toLowerCase();
+							switch (nodeName) {
+							case "endpoint":
+								Object endpoint = EndpointReader.read(curr);
+								if (endpoint instanceof HostAndPort) {
+									rabbitMQServerWrapperConfig.addEndpoint((HostAndPort) endpoint);
+								} else if (endpoint instanceof Collection) {
+									rabbitMQServerWrapperConfig.addEndpoints((Collection<HostAndPort>) endpoint);
+								}
+								break;
+							case "credential":
+								Object credential = CredentialReader.read(curr);
+								if (credential instanceof UserNameAndPassword) {
+									rabbitMQServerWrapperConfig.setCredential((UserNameAndPassword) credential);
+								}
+								break;
+							case "name":
+								rabbitMQServerWrapperConfig.setName(curr.getTextContent().trim());
+								break;
+							case "autoreconnect":
+								getLogger().warn("Autoreconnect is default and cannot be set, it's deprecated");
+								break;
+							default:
+								throw new RuntimeException("invalid tag name: " + curr.getNodeName());
+							}
 						}
-						try {
-							port = Integer
-									.valueOf(((Node) xPath.compile("port").evaluate(endpointNode, XPathConstants.NODE))
-											.getTextContent());
-						} catch (Exception ex) {
-							getLogger().warn("port config is invalid : " + endpointNode.getTextContent(), ex);
-						}
-						if (host != null && port > 0) {
-							HostAndPort endpoint = new HostAndPort(host, port);
-							rabbitMQServerWrapperConfig.addEndpoint(endpoint);
-						}
-					}
-					String userName = null;
-					String password = null;
-					try {
-						userName = ((Node) xPath.compile("credential/username").evaluate(item, XPathConstants.NODE))
-								.getTextContent();
-					} catch (Exception e) {
-						// do nothing
-					}
-					try {
-						password = ((Node) xPath.compile("credential/password").evaluate(item, XPathConstants.NODE))
-								.getTextContent();
-					} catch (Exception e) {
-						// do nothing
+						curr = curr.getNextSibling();
 					}
 
-					rabbitMQServerWrapperConfig.setName(
-							((Node) xPath.compile("name").evaluate(item, XPathConstants.NODE)).getTextContent());
-					rabbitMQServerWrapperConfig.setCredential(new UserNameAndPassword(userName, password));
 					this.serverWrapperConfigs.add(rabbitMQServerWrapperConfig);
 					break;
 				}
@@ -480,7 +473,7 @@ class ExtensionConfigReader extends XmlConfigReader {
 				while (curr != null) {
 					if (curr.getNodeType() == 1) {
 						String value = curr.getTextContent().trim();
-						switch (curr.getNodeName().trim()) {
+						switch (curr.getNodeName().trim().toLowerCase()) {
 						case "name":
 							config.setName(value);
 							break;
@@ -491,6 +484,14 @@ class ExtensionConfigReader extends XmlConfigReader {
 						case "member":
 						case "ismember":
 							config.setMember(Boolean.valueOf(value));
+							break;
+						case "initializer":
+						case "initializerClass":
+							config.setInitializerClass(value);
+							break;
+						case "lazyinit":
+						case "islazyinit":
+							config.setLazyInit(Boolean.valueOf(value));
 							break;
 						default:
 							break;
@@ -568,34 +569,78 @@ class ExtensionConfigReader extends XmlConfigReader {
 				this.redisConfigs.add(config);
 			} else if (item.getNodeName().equalsIgnoreCase("mongodb")) {
 				MongoDBConfig config = new MongoDBConfig();
-				config.setName(((Node) xPath.compile("name").evaluate(item, XPathConstants.NODE)).getTextContent());
-				Object endpoint = EndpointReader
-						.read((Node) xPath.compile("endpoint").evaluate(item, XPathConstants.NODE));
-				if (endpoint instanceof HostAndPort) {
-					config.addEndpoint((HostAndPort) endpoint);
-				} else if (endpoint instanceof Collection) {
-					for (HostAndPort hnp : (Collection<HostAndPort>) endpoint) {
-						config.addEndpoint(hnp);
+				Node currNode = item.getFirstChild();
+				while (currNode != null) {
+					String nodeName = currNode.getNodeName().toLowerCase();
+					if (currNode.getNodeType() == 1) {
+						switch (nodeName) {
+						case "name":
+							config.setName(currNode.getTextContent().trim());
+							break;
+						case "endpoint":
+						case "endpoints":
+							Object endpoint = null;
+							try {
+								endpoint = EndpointReader.read(currNode);
+							} catch (RuntimeException e) {
+								getLogger().error("Invalid endpoint config for mongoDB, extension: {}",
+										this.extensionName);
+								throw e;
+							}
+							if (endpoint != null) {
+								if (endpoint instanceof HostAndPort) {
+									config.addEndpoint((HostAndPort) endpoint);
+								} else if (endpoint instanceof Collection) {
+									for (HostAndPort hnp : (Collection<HostAndPort>) endpoint) {
+										config.addEndpoint(hnp);
+									}
+								}
+							}
+							break;
+						case "credential":
+						case "credentials": {
+							Node credentialEntry = currNode.getFirstChild();
+							while (credentialEntry != null) {
+								if (credentialEntry.getNodeType() == Node.ELEMENT_NODE) {
+									String credentialNodeName = credentialEntry.getNodeName().toLowerCase();
+									if (credentialNodeName.equalsIgnoreCase("userName")
+											|| credentialNodeName.equalsIgnoreCase("password")
+											|| credentialNodeName.equalsIgnoreCase("authDB")) {
+										// read as single credential
+										config.addCredentialConfig(new MongoDBCredentialConfig(credentialEntry));
+									} else if (credentialNodeName.equalsIgnoreCase("entry")) {
+										// read as multi credential config
+										while (credentialEntry != null) {
+											if (credentialEntry.getNodeType() == Node.ELEMENT_NODE) {
+												credentialNodeName = credentialEntry.getNodeName().toLowerCase();
+												if (credentialNodeName.equalsIgnoreCase("entry")) {
+													config.addCredentialConfig(
+															new MongoDBCredentialConfig(credentialEntry));
+												} else {
+													getLogger().warn("Invalid credential section: {}, ignored",
+															credentialNodeName);
+												}
+											}
+											credentialEntry = credentialEntry.getNextSibling();
+										}
+										break;
+									}
+								}
+								credentialEntry = credentialEntry.getNextSibling();
+							}
+							break;
+						}
+						case "readPreference": {
+							config.setReadPreference(new MongoDBReadPreferenceConfig(currNode));
+							break;
+						}
+						default:
+							getLogger().warn("Mongodb config section is unrecognized: {}, extension: {}", nodeName,
+									this.extensionName);
+							break;
+						}
 					}
-				}
-				NodeList credentials = (NodeList) xPath.compile("credentials/entry").evaluate(item,
-						XPathConstants.NODESET);
-				for (int j = 0; j < credentials.getLength(); j++) {
-					Node entry = credentials.item(j);
-					try {
-						MongoDBCredentialConfig credentialConfig = new MongoDBCredentialConfig();
-						credentialConfig
-								.setUserName(((Node) xPath.compile("username").evaluate(entry, XPathConstants.NODE))
-										.getTextContent());
-						credentialConfig
-								.setPassword(((Node) xPath.compile("password").evaluate(entry, XPathConstants.NODE))
-										.getTextContent());
-						credentialConfig.setAuthDB(
-								((Node) xPath.compile("authdb").evaluate(entry, XPathConstants.NODE)).getTextContent());
-						config.addCredentialConfig(credentialConfig);
-					} catch (Exception ex) {
-						getLogger().warn("credential config is invalid : " + entry.getTextContent(), ex);
-					}
+					currNode = currNode.getNextSibling();
 				}
 				if (this.mongoDBConfigs == null) {
 					this.mongoDBConfigs = new ArrayList<MongoDBConfig>();

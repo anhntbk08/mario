@@ -1,5 +1,9 @@
 package com.nhb.common.db.models;
 
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.hazelcast.core.HazelcastInstance;
 import com.mongodb.MongoClient;
 import com.nhb.common.cache.jedis.JedisService;
@@ -15,10 +19,35 @@ public class ModelFactory {
 	private HazelcastInstance hazelcast;
 	private MongoClient mongoClient;
 
+	private final Map<String, Object> environmentVariables = new ConcurrentHashMap<>();
+
+	private final Map<String, String> implMap = new ConcurrentHashMap<>();
+
 	private CassandraDAOFactory cassandraDAOFactory;
 
 	public ModelFactory() {
 		// do nothing;
+	}
+
+	public void addClassImplMapping(Properties props) {
+		if (props != null) {
+			for (Object obj : props.keySet()) {
+				String key = String.valueOf(obj);
+				this.implMap.put(key.trim(), props.getProperty(key).trim());
+			}
+		}
+	}
+
+	public void addClassImplMapping(Map<String, String> map) {
+		if (map != null) {
+			for (String key : map.keySet()) {
+				this.implMap.put(key.trim(), map.get(key).trim());
+			}
+		}
+	}
+
+	public void removeClassImplMapping(String key) {
+		this.implMap.remove(key);
 	}
 
 	public ModelFactory(DBIAdapter dbAdapter) {
@@ -29,20 +58,25 @@ public class ModelFactory {
 		this.setDbAdapter(dbAdapter);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends AbstractModel> T getModel(String modelClass) {
 		try {
-			@SuppressWarnings("unchecked")
-			Class<T> clazz = (Class<T>) this.classLoader.loadClass(modelClass);
+			final Class<?> clazz;
+			if (this.implMap.containsKey(modelClass)) {
+				clazz = (Class<?>) this.classLoader.loadClass(this.implMap.get(modelClass));
+			} else {
+				clazz = (Class<?>) this.classLoader.loadClass(modelClass);
+			}
 			T model = (T) clazz.newInstance();
 			model.setDbAdapter(this.getDbAdapter());
 			model.setJedisService(this.getJedisService());
 			model.setHazelcast(this.getHazelcast());
-			model.setMongoClient(this.mongoClient);
+			model.setMongoClient(this.getMongoClient());
 			model.setCassandraDAOFactory(this.getCassandraDAOFactory());
-			model.silentInit();
+			model.silentInit(this.environmentVariables);
 			return model;
 		} catch (Exception ex) {
-			throw new RuntimeException("create model instance error: ", ex);
+			throw new RuntimeException("Create model instance error: ", ex);
 		}
 	}
 
@@ -106,4 +140,15 @@ public class ModelFactory {
 		}
 	}
 
+	public void setEnvironmentVariable(String key, Object value) {
+		this.environmentVariables.put(key, value);
+	}
+
+	public void removeEnvironmentVariable(String key) {
+		this.environmentVariables.remove(key);
+	}
+
+	public Object getEnvironmentVariable(String key) {
+		return this.environmentVariables.get(key);
+	}
 }

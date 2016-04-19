@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
+import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
+import com.mongodb.Tag;
+import com.mongodb.TagSet;
 import com.nhb.common.BaseLoggable;
 import com.nhb.common.db.mongodb.config.MongoDBConfig;
 import com.nhb.common.db.mongodb.config.MongoDBCredentialConfig;
@@ -79,7 +83,26 @@ public class MongoDBSourceManager extends BaseLoggable {
 						credentials.add(MongoCredential.createCredential(credentialConfig.getUserName(),
 								credentialConfig.getAuthDB(), credentialConfig.getPassword().toCharArray()));
 					}
-					this.mongoClients.put(config.getName(), new MongoClient(serverAddresses, credentials));
+					MongoClient mongoClient = null;
+					if (credentials.size() > 0) {
+						mongoClient = new MongoClient(serverAddresses, credentials);
+					} else {
+						mongoClient = new MongoClient(serverAddresses);
+					}
+					if (config.getReadPreference() != null) {
+						List<TagSet> tagSetList = new ArrayList<>();
+						List<Map<String, String>> tagSetListConfig = config.getReadPreference().getTagSetListConfig();
+						for (Map<String, String> tagSetConfig : tagSetListConfig) {
+							List<Tag> tags = new ArrayList<>();
+							for (Entry<String, String> tagEntry : tagSetConfig.entrySet()) {
+								tags.add(new Tag(tagEntry.getKey(), tagEntry.getValue()));
+							}
+							tagSetList.add(new TagSet(tags));
+						}
+						mongoClient.setReadPreference(ReadPreference.valueOf(config.getReadPreference().getName(), tagSetList));
+					}
+					this.mongoClients.put(config.getName(), mongoClient);
+
 				} else {
 					throw new RuntimeException("Unable to get understand why the config for name " + name
 							+ " was null, please check the code's logic");
