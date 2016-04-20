@@ -40,11 +40,25 @@
 			</endpoint>
 			<credentials>
 				<entry>
-					<username>admin</username>
-					<password>admin</password>
-					<authdb>admin</authdb>
+					<username>[userName]</username>
+					<password>[password]</password>
+					<authdb>[authdb]</authdb>
 				</entry>
 			</credentials>
+			<!-- optional read preference config, null by default -->
+			<readpreference>
+				<name>[NEAREST | PRIMARY | SECONDARY | SECONDARY_PREFERRED | PRIMARY_PREFERRED, default is primary, case insensitive]</name>
+				<!-- tag set list is optional, default by null -->
+				<tagSetList>
+					<!-- multi tag set can be configured here -->
+					<tagSet>
+						<!-- multi tag can be configured here -->
+						<tag name="[tagName_1]">[tagValue_1]</tag>
+						<tag name="[tagName_2]">[tagValue_2]</tag>
+						<tag name="[tagName_n]">[tagValue_n]</tag>
+					</tagSet>
+				</tagSetList>
+			</readpreference>
 		</mongodb>
 
 		<hazelcast>

@@ -6,11 +6,16 @@ import java.util.List;
 
 import com.nhb.common.vo.HostAndPort;
 
+import lombok.ToString;
+
+@ToString
 public class MongoDBConfig {
 
 	private String name;
 	private List<MongoDBCredentialConfig> credentialConfigs = new ArrayList<MongoDBCredentialConfig>();
 	private List<HostAndPort> endpoints = new ArrayList<HostAndPort>();
+
+	private MongoDBReadPreferenceConfig readPreference;
 
 	public MongoDBConfig() {
 		// do nothing
@@ -68,5 +73,13 @@ public class MongoDBConfig {
 		if (configs != null) {
 			this.getCredentialConfigs().addAll(Arrays.asList(configs));
 		}
+	}
+
+	public MongoDBReadPreferenceConfig getReadPreference() {
+		return readPreference;
+	}
+
+	public void setReadPreference(MongoDBReadPreferenceConfig readPreference) {
+		this.readPreference = readPreference;
 	}
 }

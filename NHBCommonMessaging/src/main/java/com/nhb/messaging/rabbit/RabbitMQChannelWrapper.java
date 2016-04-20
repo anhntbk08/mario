@@ -30,11 +30,14 @@ public abstract class RabbitMQChannelWrapper extends BaseEventDispatcher impleme
 	}
 
 	public final void start() {
-		if (this.isConnected()) {
-			return;
+		if (!this.isConnected()) {
+			synchronized (this) {
+				if (!this.isConnected()) {
+					this.connect();
+					this._start();
+				}
+			}
 		}
-		this.connect();
-		this._start();
 	}
 
 	public final boolean isConnected() {
@@ -52,7 +55,7 @@ public abstract class RabbitMQChannelWrapper extends BaseEventDispatcher impleme
 				getLogger().error("Unable to create channel", e);
 				this.channel.close();
 			} catch (IOException e1) {
-				getLogger().error("Unable to close channel due error occur: ", e1);
+				getLogger().error("Unable to close channel due an error occur: ", e1);
 			} catch (TimeoutException e1) {
 				getLogger().error("Unable to close channel, timeout: ", e1);
 			}
@@ -74,7 +77,7 @@ public abstract class RabbitMQChannelWrapper extends BaseEventDispatcher impleme
 		}
 		this.isStopping.set(true);
 		this._stop();
-		if (this.channel != null) {
+		if (this.channel != null && this.channel.isOpen()) {
 			try {
 				this.channel.close();
 				this.channel.removeShutdownListener(channelShutdownListener);

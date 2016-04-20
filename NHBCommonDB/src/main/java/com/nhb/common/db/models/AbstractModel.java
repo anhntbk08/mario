@@ -1,5 +1,8 @@
 package com.nhb.common.db.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.skife.jdbi.v2.Handle;
 
 import com.hazelcast.core.HazelcastInstance;
@@ -17,6 +20,7 @@ public class AbstractModel extends BaseLoggable {
 	private HazelcastInstance hazelcast;
 	private MongoClient mongoClient;
 	private CassandraDAOFactory cassandraDAOFactory;
+	private Map<String, Object> environmentVariables = new HashMap<>();
 
 	/**
 	 * This method called after this model created in ModelFactory and
@@ -24,9 +28,15 @@ public class AbstractModel extends BaseLoggable {
 	 * 
 	 * Internal modifier let this invisible with outside method
 	 */
-	void silentInit() {
+	void silentInit(Map<String, Object> environmentVariables) {
+		// setting environment variables injected by model factory
+		this.environmentVariables = environmentVariables;
 		// call protected method init
 		this.init();
+	}
+
+	protected Map<String, Object> getEnvironmentVariables() {
+		return this.environmentVariables;
 	}
 
 	protected void init() {
