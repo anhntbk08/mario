@@ -12,7 +12,7 @@
 	<property name="src.dir" value="src" />
 	<property name="conf" value="conf" />
 	<property name="dist.zip" value="dist/${app-name}.zip" />
-	<property name="dist" value="dist/${app-name}" />
+	<property name="dist" value="dist/app/${app-name}" />
 	<property name="build.jar" value="dist/jar" />
 	<property name="dist.lib" value="${dist}/lib" />
 	<property name="dist.lib.boot" value="${dist}/lib-boot" />
