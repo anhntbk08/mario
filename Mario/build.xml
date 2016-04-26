@@ -11,6 +11,7 @@
 	<property name="build.classes" value="bin" />
 	<property name="src.dir" value="src" />
 	<property name="conf" value="conf" />
+	<property name="zip.dir" value="dist/app" />
 	<property name="dist.zip" value="dist/${app-name}.zip" />
 	<property name="dist" value="dist/app/${app-name}" />
 	<property name="build.jar" value="dist/jar" />
@@ -116,7 +117,7 @@
 	</target>
 
 	<target name="zip" depends="deploy">
-		<zip destfile="${dist.zip}" basedir="${dist}" />
+		<zip destfile="${dist.zip}" basedir="${zip.dir}" />
 	</target>
 
 	<!-- <target name="deploy-remotely" depends="deploy">
