@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
@@ -79,12 +80,8 @@ public class HttpClientHelper extends BaseLoggable implements Closeable {
 				}
 			} else {
 				String json = params.toJSON();
-				try {
-					builder.setEntity(new StringEntity(json));
-					builder.addHeader("Content-Type", "application/json");
-				} catch (UnsupportedEncodingException e) {
-					throw new RuntimeException("Unable to send data", e);
-				}
+				builder.setEntity(new StringEntity(json, Charset.forName("UTF-8")));
+				builder.addHeader("Content-Type", "application/json");
 			}
 		}
 		// getLogger().debug("\n------- REQUEST -------\nURI: {}\nPARAMS:

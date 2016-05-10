@@ -311,7 +311,7 @@ public final class ObjectUtils {
 		Method[] methods = getAllMethods(clazz);
 		for (Method method : methods) {
 			String methodName = method.getName();
-			if (method.getParameterCount() == 0 && !method.isAnnotationPresent(Transparent.class)
+			if (method.isAccessible() && method.getParameterCount() == 0 && !method.isAnnotationPresent(Transparent.class)
 					&& !Modifier.isStatic(method.getModifiers())) {
 				if (methodName.startsWith(GETTER_PREFIX) && methodName.length() > GETTER_PREFIX.length()) {
 					try {
