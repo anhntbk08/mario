@@ -92,4 +92,21 @@ public final class StringUtils {
 		}
 		return null;
 	}
+	
+	public static String implodeWithGlue(String glue, List<?> elements) {
+		if (elements != null && glue != null) {
+			StringBuilder sb = new StringBuilder();
+			boolean isFirst = true;
+			for (Object ele : elements) {
+				if (!isFirst) {
+					sb.append(glue);
+				} else {
+					isFirst = false;
+				}
+				sb.append(ele);
+			}
+			return sb.toString();
+		}
+		return null;
+	}
 }

@@ -36,7 +36,11 @@ public class DBIAdapter extends SQLDbAdapter {
 
 	public DBI getDBI() {
 		if (this.dbi == null) {
-			this.dbi = new DBI(this.getDataSource());
+			synchronized (this) {
+				if (this.dbi == null) {
+					this.dbi = new DBI(this.getDataSource());
+				}
+			}
 		}
 		return dbi;
 	}

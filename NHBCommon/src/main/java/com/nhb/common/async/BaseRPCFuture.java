@@ -30,10 +30,10 @@ public class BaseRPCFuture<V> extends BaseEventDispatcher implements RPCFuture<V
 		});
 	}
 
-	private Callback<V> callable;
-	private V value;
-	private boolean done = false;
-	private boolean cancelled = false;
+	private volatile Callback<V> callable;
+	private volatile V value;
+	private volatile boolean done = false;
+	private volatile boolean cancelled = false;
 
 	private Future<?> monitorFuture;
 	private Future<?> cancelFuture;

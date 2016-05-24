@@ -57,7 +57,11 @@ public abstract class SQLDbAdapter extends BaseLoggable {
 	}
 
 	public Properties getConfig() {
-		return config;
+		if (config != null) {
+			return config;
+		} else {
+			return this.dataSourceManager.getConfig(getDataSourceName());
+		}
 	}
 
 	public void setConfig(Properties config) {
