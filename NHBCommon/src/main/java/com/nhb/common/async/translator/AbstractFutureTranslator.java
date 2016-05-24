@@ -12,67 +12,101 @@ import com.nhb.common.async.RPCFuture;
 public abstract class AbstractFutureTranslator<FromType, ToType> extends BaseLoggable
 		implements FutureTranslator<FromType, ToType> {
 
-	private final Future<FromType> future;
-	private volatile ToType response;
+	private final Future<FromType> sourceFuture;
+	private volatile ToType lastResult;
+
+	private Throwable failedCause;
 
 	public AbstractFutureTranslator(RPCFuture<FromType> future) {
 		assert future != null;
-		this.future = future;
+		this.sourceFuture = future;
 	}
 
-	protected Future<FromType> getFuture() {
-		return this.future;
+	protected Future<FromType> getSourceFuture() {
+		return this.sourceFuture;
 	}
 
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
-		return this.future.cancel(mayInterruptIfRunning);
+		return this.sourceFuture.cancel(mayInterruptIfRunning);
 	}
 
 	@Override
 	public boolean isCancelled() {
-		return this.future.isCancelled();
+		return this.sourceFuture.isCancelled();
 	}
 
 	@Override
 	public boolean isDone() {
-		return this.future.isDone();
+		return this.sourceFuture.isDone();
 	}
 
-	protected final ToType parseAndSaveResponse(FromType response) {
-		if (this.response == null) {
+	/**
+	 * Attempt to parse and save the result returned by source future, using
+	 * translate(result) method. <br/>
+	 * Any <b>exception</b> thrown by translate() will be caught automatically
+	 * and prevent the translate method to be re-executed
+	 * 
+	 * 
+	 * @param result
+	 * @return
+	 */
+	protected final ToType parseAndSaveResult(FromType result) {
+		if (this.lastResult == null && this.getFailedCause() == null) {
 			synchronized (this) {
-				if (this.response == null) {
-					this.response = this.translate(cloneBeforeTranslate(response));
+				if (this.lastResult == null && this.getFailedCause() == null) {
+					try {
+						this.lastResult = this.translate(cloneBeforeTranslate(result));
+					} catch (Exception e) {
+						this.setFailedCause(e);
+					}
 				}
 			}
 		}
-		return this.response;
+		return this.lastResult;
 	}
 
+	/**
+	 * Translate response in FromType to ToType <br/>
+	 * Any exception thrown will be caught by parseAndSaveResult() to prevent
+	 * this method to be re-executed
+	 * 
+	 * @see AbstractFutureTranslator.parseAndSaveResponse
+	 * @param sourceResult
+	 * @return
+	 */
 	@ThreadSafe
-	protected abstract ToType translate(FromType response);
+	protected abstract ToType translate(FromType sourceResult) throws Exception;
 
 	/**
-	 * By default, return <b>response</b> parameter itself. <br/>
-	 * Override this if the translate method make any change on the response
+	 * By default, return <b>sourceResult</b> parameter by itself. <br/>
+	 * Override this if the translate method make any change on the sourceResult
 	 * value
 	 * 
-	 * @param response
+	 * @param sourceResult
 	 * @return cloned value
 	 */
-	protected FromType cloneBeforeTranslate(FromType response) {
-		return response;
+	protected FromType cloneBeforeTranslate(FromType sourceResult) {
+		return sourceResult;
 	}
 
 	@Override
 	public ToType get() throws InterruptedException, ExecutionException {
-		return this.parseAndSaveResponse(this.future.get());
+		return this.parseAndSaveResult(this.sourceFuture.get());
 	}
 
 	@Override
 	public ToType get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-		return this.parseAndSaveResponse(this.future.get(timeout, unit));
+		return this.parseAndSaveResult(this.sourceFuture.get(timeout, unit));
+	}
+
+	@Override
+	public Throwable getFailedCause() {
+		return failedCause;
+	}
+
+	protected void setFailedCause(Throwable failedCause) {
+		this.failedCause = failedCause;
 	}
 
 }

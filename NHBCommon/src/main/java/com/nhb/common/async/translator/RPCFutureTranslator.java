@@ -12,13 +12,13 @@ public abstract class RPCFutureTranslator<FromType, ToType> extends AbstractFutu
 	@SuppressWarnings("unchecked")
 	public RPCFutureTranslator(RPCFuture<FromType> future) {
 		super(future);
-		if (this.getFuture() instanceof RPCCallback) {
-			((RPCCallback<FromType>) this.getFuture()).setCallback(new Callback<FromType>() {
+		if (this.getSourceFuture() instanceof RPCCallback) {
+			((RPCCallback<FromType>) this.getSourceFuture()).setCallback(new Callback<FromType>() {
 
 				@Override
 				public void apply(FromType result) {
 					if (getCallback() != null) {
-						getCallback().apply(parseAndSaveResponse(result));
+						getCallback().apply(parseAndSaveResult(result));
 					}
 				}
 			});
