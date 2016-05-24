@@ -30,6 +30,8 @@ public class BaseRPCFuture<V> extends BaseEventDispatcher implements RPCFuture<V
 		});
 	}
 
+	private Throwable failedCause;
+
 	private volatile Callback<V> callable;
 	private volatile V value;
 	private volatile boolean done = false;
@@ -163,6 +165,14 @@ public class BaseRPCFuture<V> extends BaseEventDispatcher implements RPCFuture<V
 
 	public void setCancelFuture(Future<?> cancelFuture) {
 		this.cancelFuture = cancelFuture;
+	}
+
+	public Throwable getFailedCause() {
+		return failedCause;
+	}
+
+	protected void setFailedCause(Throwable failedCause) {
+		this.failedCause = failedCause;
 	}
 
 }
