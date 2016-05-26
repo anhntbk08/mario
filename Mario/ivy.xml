@@ -27,7 +27,7 @@
 		<dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.3.7.RC1" />
 
 		<!-- socket nio -->
-		<dependency org="io.netty" name="netty-all" rev="4.1.0.CR4" />
+		<dependency org="io.netty" name="netty-all" rev="4.1.0.CR7" />
 		<!-- <dependency org="io.netty" name="netty-tcnative" rev="1.1.33.Fork15"/> -->
 		<dependency org="com.barchart.udt" name="barchart-udt-bundle" rev="2.3.0" />
 
@@ -63,7 +63,7 @@
 
 		<dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2" />
 		<dependency org="com.google.guava" name="guava" rev="19.0" />
-		<dependency org="com.google.code.gson" name="gson" rev="2.5" />
+		<dependency org="com.google.code.gson" name="gson" rev="2.6.2" />
 		<dependency org="commons-lang" name="commons-lang" rev="2.6" />
 		<dependency org="javax.mail" name="mail" rev="1.5.0-b01" />
 
