@@ -52,7 +52,7 @@ GC_TUNE="-XX:+UseParNewGC \
 -XX:+ParallelRefProcEnabled"
 
 JVM_OPTS="$GC_TUNE \
--Xbootclasspath/p:./lib-boot/alpn-boot-8.1.5.v20150921.jar \
+-Xbootclasspath/p:./lib-boot/alpn-boot-8.1.8.v20160420.jar \
 -server \
 -d64 -Xms4g -Xmx4g \
 -XX:+HeapDumpOnOutOfMemoryError \

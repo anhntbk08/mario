@@ -4,9 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -14,8 +14,9 @@ import com.nhb.common.BaseLoggable;
 
 public class SQLDataSourceManager extends BaseLoggable {
 
-	private final Map<String, DataSourceCreator> datasourceCreatorByName = new HashMap<String, DataSourceCreator>();
-	private final Map<String, DataSource> nameToDataSourceMapping = new HashMap<String, DataSource>();
+	private final Map<String, DataSourceCreator> datasourceCreatorByName = new ConcurrentHashMap<String, DataSourceCreator>();
+	private final Map<String, DataSource> nameToDataSourceMapping = new ConcurrentHashMap<String, DataSource>();
+	private final Map<String, Properties> datasourceConfigByName = new ConcurrentHashMap<>();
 	private String defaultDataSourceName;
 
 	public SQLDataSourceManager() {
@@ -31,7 +32,12 @@ public class SQLDataSourceManager extends BaseLoggable {
 	}
 
 	public void registerDataSource(String name, Properties props) throws Exception {
+		this.datasourceConfigByName.put(name, props);
 		this.nameToDataSourceMapping.put(name, this.createDataSource(props));
+	}
+
+	public Properties getConfig(String name) {
+		return this.datasourceConfigByName.get(name);
 	}
 
 	public void deregisterDataSource(String name) {

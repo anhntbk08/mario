@@ -69,8 +69,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/trove4j-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zkclient-0.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zookeeper-3.4.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gson-2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/netty-all-4.1.0.CR4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json-simple-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-local/netty-tcnative-1.1.33.Fork14.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mongo-java-driver-3.2.2.jar">
@@ -84,8 +82,10 @@
 			<attribute name="javadoc_location" value="https://lmax-exchange.github.io/disruptor/docs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/java-client-2.2.6.jar"/>
-	<classpathentry kind="lib" path="lib/core-io-1.2.7.jar"/>
-	<classpathentry kind="lib" path="lib/rxjava-1.0.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/java-client-2.2.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/core-io-1.2.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/rxjava-1.0.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gson-2.6.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-all-4.1.0.CR7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

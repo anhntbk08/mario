@@ -4,10 +4,8 @@
 		<sql>
 			<name>[sql-source-name]</name>
 			<variables>
-				<variable name="url" type="string">jdbc:mysql://[host]:[port|3306]/[db_name]
-				</variable>
-				<variable name="driverClassName" type="string">com.mysql.jdbc.Driver
-				</variable>
+				<variable name="url" type="string">jdbc:mysql://[host]:[port|3306]/[db_name]</variable>
+				<variable name="driverClassName" type="string">com.mysql.jdbc.Driver</variable>
 				<variable name="username" type="string">[user]</variable>
 				<variable name="password" type="string">[password]</variable>
 				<!-- <variable name="validatorClassName" type="string"></variable> -->
@@ -33,10 +31,7 @@
 		<mongodb>
 			<name>[mongodb-name]</name>
 			<endpoint>
-				<entry>
-					<host>127.0.0.1</host>
-					<port>27017</port>
-				</entry>
+				<entry>127.0.0.1:27017</entry>
 			</endpoint>
 			<credentials>
 				<entry>
