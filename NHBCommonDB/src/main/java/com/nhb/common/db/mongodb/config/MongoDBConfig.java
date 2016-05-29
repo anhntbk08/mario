@@ -6,9 +6,6 @@ import java.util.List;
 
 import com.nhb.common.vo.HostAndPort;
 
-import lombok.ToString;
-
-@ToString
 public class MongoDBConfig {
 
 	private String name;

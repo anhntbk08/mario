@@ -2,6 +2,7 @@ package com.mario.gateway.socket.tcp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,11 @@ import com.mario.gateway.socket.SocketSession;
 import com.mario.gateway.socket.SocketSessionManager;
 import com.mario.gateway.socket.event.SocketSessionEvent;
 import com.nhb.common.Loggable;
+import com.nhb.common.data.PuArray;
+import com.nhb.common.data.PuDataType;
 import com.nhb.common.data.PuElement;
+import com.nhb.common.data.PuObject;
+import com.nhb.common.data.PuValue;
 import com.nhb.eventdriven.Event;
 import com.nhb.eventdriven.EventDispatcher;
 import com.nhb.eventdriven.EventHandler;
@@ -29,8 +34,8 @@ public class NettyTCPSocketSession extends ChannelInboundHandlerAdapter implemen
 	private String id;
 	private ChannelHandlerContext channelHandlerContext;
 	private SocketSessionManager sessionManager;
-
 	private InetSocketAddress remoteSocketAddress;
+	private AtomicInteger messageId = new AtomicInteger();
 
 	private Logger logger;
 	private SocketReceiver receiver;
@@ -67,6 +72,14 @@ public class NettyTCPSocketSession extends ChannelInboundHandlerAdapter implemen
 			throw new RuntimeException("Channel context hasn't been activated");
 		}
 		if (obj instanceof PuElement) {
+			if (obj instanceof PuArray) {
+				((PuArray) obj).add(0, new PuValue(messageId.incrementAndGet(), PuDataType.INTEGER));
+			} else if (obj instanceof PuObject) {
+				((PuObject) obj).setInteger("mid", messageId.incrementAndGet());
+			}
+
+			messageId.compareAndSet(10000, 0);
+
 			this.getChannelHandlerContext().writeAndFlush(obj);
 		} else {
 			byte[] bytes = null;
