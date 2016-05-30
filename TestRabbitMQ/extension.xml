@@ -7,10 +7,7 @@
 		<rabbitmq>
 			<name>rabbitmq_localhost</name>
 			<endpoint>
-				<entry>
-					<host>localhost</host>
-					<port>5672</port>
-				</entry>
+				<entry>localhost:5672</entry>
 			</endpoint>
 			<credential>
 				<username>root</username>
