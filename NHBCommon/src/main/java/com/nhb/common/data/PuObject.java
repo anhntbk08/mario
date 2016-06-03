@@ -140,7 +140,7 @@ public class PuObject extends BaseEventDispatcher implements PuObjectRW, Iterabl
 			} else if (entry.getValue().getType() == PuDataType.PUARRAY) {
 				value = entry.getValue().getPuArray().toList();
 			} else if (entry.getValue().getType() == PuDataType.RAW) {
-				value = entry.getValue().getBase64();
+				value = entry.getValue().getRawAsBase64();
 			} else {
 				value = entry.getValue().getData();
 			}
