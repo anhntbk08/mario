@@ -173,7 +173,7 @@ public class PuArrayList extends ArrayList<PuValue> implements PuArray {
 			} else if (value.getType() == PuDataType.PUARRAY) {
 				jsonArray.add(value.getPuArray().toList());
 			} else if (value.getType() == PuDataType.RAW) {
-				jsonArray.add(value.getBase64());
+				jsonArray.add(value.getRawAsBase64());
 			} else {
 				jsonArray.add(value.getData());
 			}

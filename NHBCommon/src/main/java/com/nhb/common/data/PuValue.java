@@ -122,9 +122,17 @@ public class PuValue implements PuElement, Serializable {
 		return this.data;
 	}
 
+	/**
+	 * use getRawAsBase64() instead
+	 */
+	@Deprecated
 	public String getBase64() {
+		return this.getRawAsBase64();
+	}
+
+	public String getRawAsBase64() {
 		if (this.getData() instanceof byte[]) {
-			return new String(Base64.getEncoder().encode((byte[]) this.getData()));
+			return new String(Base64.getEncoder().encode(this.getRaw()));
 		}
 		throw new IllegalStateException("getBase64 support only for data type " + PuDataType.RAW);
 	}

@@ -31,10 +31,7 @@
 		<mongodb>
 			<name>[mongodb-name]</name>
 			<endpoint>
-				<entry>
-					<host>127.0.0.1</host>
-					<port>27017</port>
-				</entry>
+				<entry>127.0.0.1:27017</entry>
 			</endpoint>
 			<credentials>
 				<entry>
